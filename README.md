@@ -80,15 +80,18 @@ String json = retriever.getResponse();
 ```java
 import com.sigwarthsoftware.springboot.websocket.WebSocketHandler;
 
+import org.springframework.stereotype.Component;
+
 class EchoRequest { public String message; }
 class EchoResponse { public String message; }
 
+@Component
 public class EchoHandler extends WebSocketHandler<EchoRequest, EchoResponse> {
   @Override
   public EchoResponse makeResponse(EchoRequest request) {
-    EchoResponse res = new EchoResponse();
-    res.message = "Echo: " + request.message;
-    return res;
+    EchoResponse response = new EchoResponse();
+    response.message = "Echo: " + request.message;
+    return response;
   }
 }
 ```
