@@ -40,6 +40,7 @@
     "@angular/compiler": "^20.2.0",
     "@angular/compiler-cli": "^20.2.0",
     "@types/node": "^20.12.12",
+    "@theoliverlear/styles-suite": "^0.0.9",
     "ng-packagr": "^20.2.0",
     "typescript": "^5.5.4"
   },
