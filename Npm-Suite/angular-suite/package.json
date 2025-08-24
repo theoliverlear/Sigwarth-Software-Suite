@@ -25,6 +25,9 @@
     "registry": "https://npm.pkg.github.com"
   },
   "sideEffects": false,
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  },
   "peerDependencies": {
     "@angular/animations": ">=18.0.0",
     "@angular/common": ">=18.0.0",
