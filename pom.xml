@@ -38,6 +38,7 @@
 
     <modules>
         <module>Java-Suite</module>
+        <module>Npm-Suite</module>
     </modules>
 
     <properties>
