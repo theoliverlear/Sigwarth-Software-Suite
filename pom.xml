@@ -6,7 +6,7 @@
 
     <groupId>com.sigwarthsoftware</groupId>
     <artifactId>sigwarth-software-suite</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
     <packaging>pom</packaging>
 
     <name>Sigwarth-Software-Suite</name>
