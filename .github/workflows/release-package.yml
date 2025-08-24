@@ -47,6 +47,8 @@ jobs:
 
       - name: Check if version already published
         id: check_version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           node -e "const fs=require('fs'); const {execSync}=require('child_process'); const v=require('./package.json').version; let exists=false; try{execSync('npm view @theoliverlear/styles-suite@'+v+' version',{stdio:'ignore'}); exists=true;}catch(e){exists=false;} const out=process.env.GITHUB_OUTPUT; if(out){fs.appendFileSync(out,'exists='+exists+'\n');} if(exists){console.log('Version '+v+' already exists on registry. Skipping publish.');}"
 
@@ -92,11 +94,15 @@ jobs:
 
       - name: Check if version already published (angular-suite)
         id: check_version_angular
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           node -e "const fs=require('fs'); const {execSync}=require('child_process'); const v=require('./package.json').version; let exists=false; try{execSync('npm view @theoliverlear/angular-suite@'+v+' version',{stdio:'ignore'}); exists=true;}catch(e){exists=false;} const out=process.env.GITHUB_OUTPUT; if(out){fs.appendFileSync(out,'exists='+exists+'\n');} if(exists){console.log('Version '+v+' already exists on registry. Skipping build/publish.');}"
 
       - name: Install dependencies
         if: steps.check_version_angular.outputs.exists == 'false'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm ci || npm i
 
