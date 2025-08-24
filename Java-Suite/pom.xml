@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.sigwarthsoftware</groupId>
+        <artifactId>sigwarth-software-suite</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <artifactId>java-suite</artifactId>
+    <packaging>pom</packaging>
+    <name>Java-Suite</name>
+    <modules>
+        <module>Spring-Boot-Suite</module>
+        <module>String-Suite</module>
+        <module>OpenAi-Suite</module>
+        <module>Net-Suite</module>
+        <module>Builder-Suite</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>

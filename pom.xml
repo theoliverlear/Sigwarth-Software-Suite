@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sigwarthsoftware</groupId>
+    <artifactId>sigwarth-software-suite</artifactId>
+    <version>0.0.1</version>
+    <packaging>pom</packaging>
+
+    <name>Sigwarth-Software-Suite</name>
+    <description>Repo containing utility modules by Sigwarth Software.</description>
+    <url>https://github.com/theoliverlear/Sigwarth-Software-Suite</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>theoliverlear</id>
+            <name>Oliver Lear</name>
+            <url>https://github.com/theoliverlear</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/theoliverlear/Sigwarth-Software-Suite.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/theoliverlear/Sigwarth-Software-Suite.git</developerConnection>
+        <url>https://github.com/theoliverlear/Sigwarth-Software-Suite</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <modules>
+        <module>Java-Suite</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages - Sigwarth-Software-Suite</name>
+            <url>https://maven.pkg.github.com/theoliverlear/Sigwarth-Software-Suite</url>
+        </repository>
+    </distributionManagement>
+
+</project>
