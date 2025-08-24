@@ -8,14 +8,14 @@ import {services} from "../services/services";
 
 @NgModule({
     declarations: [
-        ...elements,
-        ...directives,
     ],
     imports: [
         CommonModule,
         FormsModule,
         NgOptimizedImage,
         HttpClientModule,
+        ...elements,
+        ...directives,
     ],
     providers: [
         ...services,
