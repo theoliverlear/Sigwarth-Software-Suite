@@ -3,9 +3,9 @@ import {
     Input, OnInit
 } from "@angular/core";
 import {TagType} from "../../../../models/html/TagType";
-import {TextElementLink} from "../../../../models/link/TextElementLink";
-import {ElementLink} from "../../../../models/link/ElementLink";
 import {Router} from "@angular/router";
+import {ElementLink} from "../../../../models/link/ElementLink";
+import {TextElementLink} from "../../../../models/link/TextElementLink";
 
 @Component({
     selector: 'ss-anchor',
