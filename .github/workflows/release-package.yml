@@ -45,12 +45,24 @@ jobs:
             npm i --ignore-scripts --no-audit --no-fund || true
           fi
 
+      - name: Check if version already published
+        id: check_version
+        run: |
+          node -e "const fs=require('fs'); const {execSync}=require('child_process'); const v=require('./package.json').version; let exists=false; try{execSync('npm view @theoliverlear/styles-suite@'+v+' version',{stdio:'ignore'}); exists=true;}catch(e){exists=false;} fs.appendFileSync(process.env.GITHUB_OUTPUT, `exists=${exists}\n`); if(exists){console.log('Version '+v+' already exists on registry. Skipping publish.');}"
+
       - name: Publish to GitHub Packages
+        if: steps.check_version.outputs.exists == 'false'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Skip publish (already exists)
+        if: steps.check_version.outputs.exists == 'true'
+        run: |
+          node -e "console.log('Skipped publish: @theoliverlear/styles-suite@' + require('./package.json').version + ' already exists')"
+
       - name: Output published package info
+        if: steps.check_version.outputs.exists == 'false'
         run: |
           node -e "console.log('Published @theoliverlear/styles-suite@' + require('./package.json').version)"
 
@@ -72,26 +84,44 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@theoliverlear'
+
+      - name: Configure npm registries
+        run: |
+          npm config set registry https://registry.npmjs.org
+          npm config set @theoliverlear:registry https://npm.pkg.github.com
+
+      - name: Check if version already published (angular-suite)
+        id: check_version_angular
+        run: |
+          node -e "const fs=require('fs'); const {execSync}=require('child_process'); const v=require('./package.json').version; let exists=false; try{execSync('npm view @theoliverlear/angular-suite@'+v+' version',{stdio:'ignore'}); exists=true;}catch(e){exists=false;} fs.appendFileSync(process.env.GITHUB_OUTPUT, `exists=${exists}\n`); if(exists){console.log('Version '+v+' already exists on registry. Skipping build/publish.');}"
 
       - name: Install dependencies
+        if: steps.check_version_angular.outputs.exists == 'false'
         run: |
           npm ci || npm i
 
       - name: Build angular-suite (ng-packagr)
+        if: steps.check_version_angular.outputs.exists == 'false'
         run: npm run build
 
       - name: Verify dist output
+        if: steps.check_version_angular.outputs.exists == 'false'
         run: |
           test -f dist/package.json
 
       - name: Publish from dist to GitHub Packages
+        if: steps.check_version_angular.outputs.exists == 'false'
         working-directory: Npm-Suite/angular-suite/dist
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Skip publish (already exists)
+        if: steps.check_version_angular.outputs.exists == 'true'
+        run: |
+          node -e "console.log('Skipped publish: @theoliverlear/angular-suite@' + require('./package.json').version + ' already exists')"
+
       - name: Output published package info
+        if: steps.check_version_angular.outputs.exists == 'false'
         run: |
           node -e "console.log('Published @theoliverlear/angular-suite@' + require('./dist/package.json').version)"
