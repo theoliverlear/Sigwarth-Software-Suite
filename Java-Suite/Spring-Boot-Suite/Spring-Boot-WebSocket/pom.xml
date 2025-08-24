@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>spring-boot-webSocket</artifactId>
+    <artifactId>spring-boot-websocket</artifactId>
     <name>Spring-Boot-WebSocket</name>
 
     <properties>
