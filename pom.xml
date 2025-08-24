@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <name>Sigwarth-Software-Suite</name>
-    <description>Repo containing utility modules by Sigwarth Software.</description>
+    <description>Utility modules by Sigwarth Software.</description>
     <url>https://github.com/theoliverlear/Sigwarth-Software-Suite</url>
 
     <licenses>

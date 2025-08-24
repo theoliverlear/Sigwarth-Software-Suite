@@ -12,6 +12,7 @@
 
     <artifactId>string-suite</artifactId>
     <name>String-Suite</name>
+    <description>String utilities from Sigwarth Software.</description>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>

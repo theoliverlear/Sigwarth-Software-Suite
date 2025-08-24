@@ -12,6 +12,7 @@
 
     <artifactId>spring-boot-websocket</artifactId>
     <name>Spring-Boot-WebSocket</name>
+    <description>Base WebSocket handlers that parse requests and serializes responses.</description>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>

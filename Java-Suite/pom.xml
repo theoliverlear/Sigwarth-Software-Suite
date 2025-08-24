@@ -12,6 +12,7 @@
     <artifactId>java-suite</artifactId>
     <packaging>pom</packaging>
     <name>Java-Suite</name>
+    <description>Parent for Java libraries in the Sigwarth Software Suite.</description>
     <modules>
         <module>Spring-Boot-Suite</module>
         <module>String-Suite</module>

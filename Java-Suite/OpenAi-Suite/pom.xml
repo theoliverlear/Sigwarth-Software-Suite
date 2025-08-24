@@ -12,6 +12,7 @@
 
     <artifactId>openai-suite</artifactId>
     <name>OpenAi-Suite</name>
+    <description>Wrappers for calling the OpenAI API using Java HttpClient.</description>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>

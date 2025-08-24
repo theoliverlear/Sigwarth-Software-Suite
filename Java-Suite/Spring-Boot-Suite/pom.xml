@@ -13,6 +13,7 @@
     <artifactId>spring-boot-suite</artifactId>
     <packaging>pom</packaging>
     <name>Spring-Boot-Suite</name>
+    <description>Parent module for Spring Boot helpers.</description>
     <modules>
         <module>Spring-Boot-Communication</module>
         <module>Spring-Boot-WebSocket</module>

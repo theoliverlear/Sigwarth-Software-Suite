@@ -12,6 +12,7 @@
 
     <artifactId>net-suite</artifactId>
     <name>Net-Suite</name>
+    <description>HTTP/HTTPS utilities for fetching data with minimal setup.</description>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>

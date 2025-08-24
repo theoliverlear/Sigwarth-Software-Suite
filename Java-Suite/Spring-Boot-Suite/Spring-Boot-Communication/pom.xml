@@ -12,6 +12,7 @@
 
     <artifactId>spring-boot-communication</artifactId>
     <name>Spring-Boot-Communication</name>
+    <description>DTOs and helpers for API responses.</description>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>

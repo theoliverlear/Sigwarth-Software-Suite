@@ -12,6 +12,7 @@
 
     <artifactId>spring-boot-config</artifactId>
     <name>Spring-Boot-Config</name>
+    <description>Common Spring beans and security configurations.</description>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>

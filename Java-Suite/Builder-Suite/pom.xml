@@ -12,6 +12,7 @@
 
     <artifactId>builder-suite</artifactId>
     <name>Builder-Suite</name>
+    <description>Factory/builder helper interfaces to standardize object construction.</description>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
