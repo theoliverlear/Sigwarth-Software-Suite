@@ -36,7 +36,7 @@ public class ApiCall {
     //=============================-Methods-==================================
 
     //------------------------Fetch-Name-Response-----------------------------
-    public void fetchNameResponse() {
+    public void fetchResponse() {
         HttpClient httpClient = HttpClient.newHttpClient();
         try {
             HttpRequest httpRequest = HttpRequest.newBuilder()
