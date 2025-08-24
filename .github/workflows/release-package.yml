@@ -92,6 +92,13 @@ jobs:
           npm config set registry https://registry.npmjs.org
           npm config set @theoliverlear:registry https://npm.pkg.github.com
 
+      - name: Authenticate to GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+          npm config set always-auth true
+
       - name: Check if version already published (angular-suite)
         id: check_version_angular
         env:
