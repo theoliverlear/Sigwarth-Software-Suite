@@ -20,6 +20,9 @@ individually or together.
     - Spring-Boot-Config — common Spring beans (e.g., ObjectMapper), basic security config.
     - Spring-Boot-WebSocket — base WebSocket handler that parses requests and serializes responses.
   - String-Suite — tiny string utilities (e.g., title case formatting). ✂️
+- Npm-Suite (parent for NPM packages) 📦
+  - Angular-Suite — prebuilt Angular components, directives, and services (Angular 18+).
+  - Styles-Suite — SCSS variables, mixins, and utility classes for consistent styling.
 
 ## 🧭 Typical use cases
 - Quickly add a generic WebSocket handler and focus only on your Request-to-Response logic.
@@ -57,6 +60,62 @@ mvn -T 1C -DskipTests install
 ```
 
 If you prefer consuming from GitHub Packages instead of a local install, add the GitHub Packages repository to your pom.xml or settings.xml and use the same coordinates. See the parent pom for the distributionManagement configuration. 📦
+
+3) Add an NPM package (example: @theoliverlear/styles-suite) 🧶
+
+- .npmrc
+```
+@theoliverlear:registry=https://npm.pkg.github.com
+```
+
+- Install
+```
+npm install @theoliverlear/styles-suite
+```
+
+## 📦 Npm-Suite in detail
+
+Npm-Suite contains production-ready packages published to GitHub Packages under the @theoliverlear scope. Below is a quick tour of what you get and how to use it.
+
+- @theoliverlear/angular-suite — Angular components, directives, and services (Angular 18+)
+  - Install: `npm install @theoliverlear/angular-suite`
+  - Peer deps: @angular/* 18+, rxjs 7.8+, zone.js 0.15+, crypto-js
+  - What’s inside (selected):
+    - Components: `ss-anchor`, `ss-button`, `ss-footer`, `ss-head`, `ss-img`, `ss-input`, `ss-paragraph`, `ss-title`
+    - Directives: `[undraggable]`, `[unoptimizedImage]`
+    - Services: `DelayService`, `EmailValidatorService`, `HttpClientService`, `WebSocketService`
+    - Models: `TagType`, `ElementSize`, `ElementLink`, `TextElementLink`, `TargetType`
+  - Example usage:
+    - Module import:
+      ```ts
+      import { AngularSuiteModule } from '@theoliverlear/angular-suite';
+
+      @NgModule({ imports: [AngularSuiteModule] })
+      export class AppModule {}
+      ```
+    - ss-anchor (internal vs external links):
+      ```ts
+      import { TextElementLink } from '@theoliverlear/angular-suite';
+      import { TargetType, TagType } from '@theoliverlear/angular-suite';
+
+      link = new TextElementLink('/dashboard', TargetType.SELF, true, 'Go to dashboard', TagType.SPAN);
+      // template
+      // <ss-anchor [elementLink]="link"></ss-anchor>
+      ```
+
+- @theoliverlear/styles-suite — SCSS functions and mixins for layouts and sizing
+  - Install: `npm install @theoliverlear/styles-suite`
+  - Entry: `index.scss` (Sass module system via @use/@forward)
+  - Mixins: `flex`, `size`, `square-size`, `basic-margin-padding`
+  - Functions: `calc-size`, `simple-calc`, `simplest-calc`, `simple-pixel-calc`, `add-alpha`
+  - Example usage (Sass):
+    ```scss
+    @use "@theoliverlear/styles-suite" as ss;
+
+    .container { @include ss.flex(space-between, center, column); }
+    .box { @include ss.square-size(3rem); }
+    .title { font-size: ss.calc-size(50, 30, 0.5); }
+    ```
 
 ## 🧩 Usage examples
 
@@ -108,7 +167,7 @@ String aiResponse = call.getResponse();
 ```
 Note: Set environment variable OPENAI_KEY before running. 🔐
 
-## 🛣️ Roadmap / Future ecosystems
+## 🛣️ Roadmap / Ecosystems
 Beyond Java, the suite aims to provide helpers and publishing for multiple ecosystems:
 - NPM (Node.js) 📦 — utilities and tooling published to the npm registry.
 - PyPI (Pip) 🐍 — Python helpers available via pip install.
@@ -117,12 +176,13 @@ Beyond Java, the suite aims to provide helpers and publishing for multiple ecosy
 This README will evolve as cross-language modules land. Contributions are welcome! 🙌
 
 ## 🛠️ Technology
-- Language: Java 23 ☕
-- Build: Maven (multi‑module reactor)
+- Language: Java 23 ☕, JavaScript (Node.js), TypeScript (Node.js), Sass (SCSS)
+- Build: Maven (multi‑module reactor), GitHub Actions, Node.js
 - Libraries: Spring Boot (select modules), SLF4J, Lombok, Java HttpClient
+- NPM: Angular 18+, SCSS, TypeScript, RxJS, Zone.js, CryptoJS
 
 ## ❓ Questions or help
 Email Oliver Lear Sigwarth (@theoliverlear): sigwarthsoftware@gmail.com 📬
 
 ## 📄 License
-MIT — see the license section in the project pom.xml for details.
+MIT — see the license section in the project [pom.xml](./pom.xml) for details.
