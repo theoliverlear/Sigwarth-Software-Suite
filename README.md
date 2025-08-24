@@ -100,7 +100,7 @@ import com.sigwarthsoftware.openai.message.ApiSettings;
 import com.sigwarthsoftware.openai.model.AiModel;
 
 ApiCall call = new ApiCall(AiModel.GPT_4, ApiSettings.DEFAULT, "Say hello");
-call.fetchNameResponse();
+call.fetchResponse();
 String aiResponse = call.getResponse();
 ```
 Note: Set environment variable OPENAI_KEY before running. 🔐
