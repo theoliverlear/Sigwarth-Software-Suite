@@ -52,7 +52,7 @@ jobs:
 
       - name: Output published package info
         run: |
-          echo "Published @theoliverlear/styles-suite@$(node -p -e \"require('./package.json').version\")"
+          node -e "console.log('Published @theoliverlear/styles-suite@' + require('./package.json').version)"
 
   publish-angular-suite:
     name: Build and publish angular-suite to GitHub Packages
@@ -94,4 +94,4 @@ jobs:
 
       - name: Output published package info
         run: |
-          echo "Published @theoliverlear/angular-suite@$(node -p -e \"require('./dist/package.json').version\")"
+          node -e "console.log('Published @theoliverlear/angular-suite@' + require('./dist/package.json').version)"
