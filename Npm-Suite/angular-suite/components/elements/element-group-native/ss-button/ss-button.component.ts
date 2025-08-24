@@ -11,9 +11,16 @@ import {ElementSize} from "../../../../models/ElementSize";
 import {ButtonText} from "./models/ButtonText";
 import {ButtonPosition} from "./models/ButtonPosition";
 import {TagType} from "../../../../models/html/TagType";
+import {CommonModule} from "@angular/common";
+import {SsTitleComponent} from "../ss-title/ss-title.component";
 
 @Component({
     selector: 'ss-button',
+    standalone: true,
+    imports: [
+        CommonModule,
+        SsTitleComponent
+    ],
     templateUrl: './ss-button.component.html',
     styleUrls: ['./ss-button.component.scss']
 })

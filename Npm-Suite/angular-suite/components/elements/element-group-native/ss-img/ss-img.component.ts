@@ -7,10 +7,20 @@ import {
     ViewChild
 } from "@angular/core";
 import {ImageAsset} from "../../../../assets/ImageAsset";
+import {CommonModule, NgOptimizedImage} from "@angular/common";
+import {UndraggableDirective} from "../../../../directives/undraggable.directive";
+import {UnoptimizedImageDirective} from "../../../../directives/unoptimized-image.directive";
 
 
 @Component({
     selector: 'ss-img',
+    standalone: true,
+    imports: [
+        CommonModule,
+        NgOptimizedImage,
+        UndraggableDirective,
+        UnoptimizedImageDirective
+    ],
     templateUrl: './ss-img.component.html',
     styleUrls: ['./ss-img.component.scss']
 })

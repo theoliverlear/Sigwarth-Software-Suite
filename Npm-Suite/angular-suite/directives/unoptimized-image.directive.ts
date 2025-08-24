@@ -1,7 +1,8 @@
 import {AfterViewInit, Directive, ElementRef, OnDestroy} from "@angular/core";
 
 @Directive({
-    selector: '[unoptimizedImage]'
+    selector: '[unoptimizedImage]',
+    standalone: true
 })
 export class UnoptimizedImageDirective implements AfterViewInit, OnDestroy {
     private mutationObserver: MutationObserver;
