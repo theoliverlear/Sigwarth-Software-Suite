@@ -3,9 +3,9 @@
 
 ---
 
-Sigwarth Software Suite is a collection of lightweight Java modules that 
-solve common backend problems so you can ship faster. Each module is 
-self‑contained and published under the MIT License.
+Sigwarth Software Suite is a collection of Java modules that solve common
+problems so you can ship faster. Each module is self‑contained and published 
+under the MIT License.
 
 This repository is a Maven multi‑module project. You can use modules 
 individually or together.
