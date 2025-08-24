@@ -1,0 +1,97 @@
+name: Release NPM Packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to publish (default: styles-suite)'
+        required: false
+        default: 'styles-suite'
+
+jobs:
+  publish-styles-suite:
+    name: Publish styles-suite to GitHub Packages
+    if: ${{ github.event_name == 'release' || github.event.inputs.package == 'styles-suite' || github.event.inputs.package == '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    defaults:
+      run:
+        working-directory: Npm-Suite/styles-suite
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@theoliverlear'
+
+      - name: Verify package files exist
+        run: |
+          test -f package.json
+          test -f index.scss
+
+      - name: Install (no-op for SCSS-only)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci || npm i
+          else
+            npm i --ignore-scripts --no-audit --no-fund || true
+          fi
+
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Output published package info
+        run: |
+          echo "Published @theoliverlear/styles-suite@$(node -p -e \"require('./package.json').version\")"
+
+  publish-angular-suite:
+    name: Build and publish angular-suite to GitHub Packages
+    if: ${{ github.event_name == 'release' || github.event.inputs.package == 'angular-suite' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    defaults:
+      run:
+        working-directory: Npm-Suite/angular-suite
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@theoliverlear'
+
+      - name: Install dependencies
+        run: |
+          npm ci || npm i
+
+      - name: Build angular-suite (ng-packagr)
+        run: npm run build
+
+      - name: Verify dist output
+        run: |
+          test -f dist/package.json
+
+      - name: Publish from dist to GitHub Packages
+        working-directory: Npm-Suite/angular-suite/dist
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Output published package info
+        run: |
+          echo "Published @theoliverlear/angular-suite@$(node -p -e \"require('./dist/package.json').version\")"
