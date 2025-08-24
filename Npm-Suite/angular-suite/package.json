@@ -1,0 +1,51 @@
+{
+  "name": "@theoliverlear/angular-suite",
+  "version": "0.1.0",
+  "description": "A suite of prebuilt Angular components, directives, and services by Sigwarth Software.",
+  "keywords": [
+    "angular",
+    "components",
+    "directives",
+    "services",
+    "sigwarth",
+    "ui"
+  ],
+  "homepage": "https://github.com/theoliverlear/Sigwarth-Software-Suite#readme",
+  "bugs": {
+    "url": "https://github.com/theoliverlear/Sigwarth-Software-Suite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theoliverlear/Sigwarth-Software-Suite.git",
+    "directory": "Npm-Suite/angular-suite"
+  },
+  "license": "ISC",
+  "author": "@theoliverlear - Oliver Lear Sigwarth",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "sideEffects": false,
+  "peerDependencies": {
+    "@angular/animations": ">=18.0.0",
+    "@angular/common": ">=18.0.0",
+    "@angular/core": ">=18.0.0",
+    "@angular/forms": ">=18.0.0",
+    "@angular/router": ">=18.0.0",
+    "rxjs": ">=7.8.0",
+    "zone.js": ">=0.15.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~18.2.2",
+    "@angular/cli": "^18.2.2",
+    "@angular/compiler": "^18.2.2",
+    "@angular/compiler-cli": "^18.2.2",
+    "@types/node": "^20.12.12",
+    "ng-packagr": "^18.2.0",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests defined yet\""
+  }
+}

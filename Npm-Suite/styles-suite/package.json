@@ -1,0 +1,39 @@
+{
+  "name": "@theoliverlear/styles-suite",
+  "version": "0.1.0",
+  "description": "A small set of base SCSS functions and mixins for user interfaces.",
+  "keywords": [
+    "scss",
+    "sass",
+    "styles",
+    "mixins",
+    "functions",
+    "ui",
+    "sigwarth"
+  ],
+  "homepage": "https://github.com/theoliverlear/Sigwarth-Software-Suite#readme",
+  "bugs": {
+    "url": "https://github.com/theoliverlear/Sigwarth-Software-Suite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theoliverlear/Sigwarth-Software-Suite.git",
+    "directory": "Npm-Suite/styles-suite"
+  },
+  "license": "ISC",
+  "author": "@theoliverlear - Oliver Lear Sigwarth",
+  "type": "commonjs",
+  "style": "index.scss",
+  "files": [
+    "*.scss",
+    "!**/*.map"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run verify",
+    "verify": "node -e \"require('fs').accessSync('index.scss')\"",
+    "test": "echo \"No tests for SCSS-only package\""
+  }
+}
