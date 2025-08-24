@@ -3,18 +3,18 @@
         <ng-content></ng-content>
     </ng-container>
     <ng-container *ngIf="hasText">
-        <ng-container [ngSwitch]="elementLink.tagType">
-            <h1   *ngSwitchCase="TagType.H1">{{ elementLink.text }}</h1>
-            <h2   *ngSwitchCase="TagType.H2">{{ elementLink.text }}</h2>
-            <h3   *ngSwitchCase="TagType.H3">{{ elementLink.text }}</h3>
-            <h4   *ngSwitchCase="TagType.H4">{{ elementLink.text }}</h4>
-            <h5   *ngSwitchCase="TagType.H5">{{ elementLink.text }}</h5>
-            <h6   *ngSwitchCase="TagType.H6">{{ elementLink.text }}</h6>
-            <p    *ngSwitchCase="TagType.P">{{ elementLink.text }}</p>
-            <span *ngSwitchCase="TagType.SPAN">{{ elementLink.text }}</span>
-            <div  *ngSwitchCase="TagType.DIV">{{ elementLink.text }}</div>
-            <code *ngSwitchCase="TagType.CODE">{{ elementLink.text }}</code>
-            <span *ngSwitchDefault> {{ elementLink.text }}</span>
+        <ng-container [ngSwitch]="displayTagType">
+            <h1   *ngSwitchCase="TagType.H1">{{ displayText }}</h1>
+            <h2   *ngSwitchCase="TagType.H2">{{ displayText }}</h2>
+            <h3   *ngSwitchCase="TagType.H3">{{ displayText }}</h3>
+            <h4   *ngSwitchCase="TagType.H4">{{ displayText }}</h4>
+            <h5   *ngSwitchCase="TagType.H5">{{ displayText }}</h5>
+            <h6   *ngSwitchCase="TagType.H6">{{ displayText }}</h6>
+            <p    *ngSwitchCase="TagType.P">{{ displayText }}</p>
+            <span *ngSwitchCase="TagType.SPAN">{{ displayText }}</span>
+            <div  *ngSwitchCase="TagType.DIV">{{ displayText }}</div>
+            <code *ngSwitchCase="TagType.CODE">{{ displayText }}</code>
+            <span *ngSwitchDefault> {{ displayText }}</span>
         </ng-container>
     </ng-container>
 </a>
