@@ -1,6 +1,6 @@
 {
   "name": "@theoliverlear/styles-suite",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A small set of base SCSS functions and mixins for user interfaces.",
   "keywords": [
     "scss",
