@@ -6,11 +6,15 @@ import {
     Renderer2,
     SimpleChanges
 } from "@angular/core";
-import {DOCUMENT} from "@angular/common";
+import {CommonModule, DOCUMENT} from "@angular/common";
 
 @Component({
     selector: 'ss-head',
-    templateUrl: './ss-head.component.html'
+    templateUrl: './ss-head.component.html',
+    standalone: true,
+    imports: [
+        CommonModule
+    ],
 })
 export class SsHeadComponent implements OnChanges{
     static readonly DEFAULT_FAVICON = 'assets/images/favicon/favicon.ico';
