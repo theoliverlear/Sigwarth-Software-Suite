@@ -1,6 +1,6 @@
 # @theoliverlear/styles-suite
 
-A small set of base SCSS functions and mixins for Sigwarth Software UI projects.
+A set of base SCSS functions, variables, and mixins for user interfaces.
 Publish-ready for GitHub Packages.
 
 ## Features
