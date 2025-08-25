@@ -4,8 +4,9 @@
  *
  * Usage (recommended):
  *   @use "@theoliverlear/styles-suite" as ss;
- *   .box { @include ss.flex(center, center); width: 100%; }
+ *   .box { @include ss.flex(center, center, row); width: 100%; }
  */
 
 @forward "sigwarth-functions";
 @forward "sigwarth-mixins";
+@forward "sigwarth-variables";
