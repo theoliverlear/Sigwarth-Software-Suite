@@ -41,6 +41,11 @@
     "@angular/compiler": "^20.2.0",
     "@angular/compiler-cli": "^20.2.0",
     "@types/node": "^20.12.12",
+    "@angular/core": "^20.2.0",
+    "@angular/common": "^20.2.0",
+    "@angular/router": "^20.2.0",
+    "@angular/forms": "^20.2.0",
+    "@angular/animations": "^20.2.0",
     "@theoliverlear/styles-suite": "^0.0.9",
     "ng-packagr": "^20.2.0",
     "typescript": "^5.5.4"
