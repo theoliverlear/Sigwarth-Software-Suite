@@ -29,7 +29,32 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
+    - name: Check if Maven version already published
+      id: check_maven
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+      run: |
+        V=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
+        G=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.groupId)
+        A=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.artifactId)
+        GP=${G//./\/}
+        URL="https://maven.pkg.github.com/${REPO}/${GP}/${A}/${V}/${A}-${V}.pom"
+        echo "Checking existence of: $URL"
+        code=$(curl -s -o /dev/null -w "%{http_code}" -u "${{ github.actor }}:${GITHUB_TOKEN}" "$URL")
+        exists=false
+        if [ "$code" = "200" ]; then exists=true; fi
+        if [ "$code" = "401" ] || [ "$code" = "403" ]; then echo "Auth issue checking $URL (HTTP $code). Proceeding to deploy to avoid false skip."; exists=false; fi
+        echo "exists=$exists" >> "$GITHUB_OUTPUT"
+        if [ "$exists" = "true" ]; then echo "Version $V already exists on GitHub Packages. Skipping deploy."; fi
+
     - name: Publish to GitHub Packages Apache Maven
+      if: steps.check_maven.outputs.exists == 'false'
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Skip publish (already exists)
+      if: steps.check_maven.outputs.exists == 'true'
+      run: |
+        echo "Skipped publish: $(mvn -q -DforceStdout help:evaluate -Dexpression=project.groupId):$(mvn -q -DforceStdout help:evaluate -Dexpression=project.artifactId):$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version) already exists in GitHub Packages"
