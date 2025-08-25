@@ -34,7 +34,7 @@ export class SsAnchorComponent implements OnInit {
         this.hasText = this.elementLink instanceof TextElementLink;
         if (this.elementLink instanceof TextElementLink) {
             this.displayText = this.elementLink.text;
-            this.displayTagType = (this.elementLink as TextElementLink).tagType ?? TagType.SPAN;
+            this.displayTagType = (this.elementLink as TextElementLink).tagType ?? TagType.P;
         } else {
             this.displayText = '';
             this.displayTagType = TagType.SPAN;
