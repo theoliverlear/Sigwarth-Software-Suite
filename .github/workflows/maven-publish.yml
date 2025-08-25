@@ -41,7 +41,7 @@ jobs:
         GP=${G//./\/}
         URL="https://maven.pkg.github.com/${REPO}/${GP}/${A}/${V}/${A}-${V}.pom"
         echo "Checking existence of: $URL"
-        code=$(curl -s -o /dev/null -w "%{http_code}" -u "${{ github.actor }}:${GITHUB_TOKEN}" "$URL")
+        code=$(curl -L -s -o /dev/null -w "%{http_code}" -u "${{ github.actor }}:${GITHUB_TOKEN}" "$URL")
         exists=false
         if [ "$code" = "200" ]; then exists=true; fi
         if [ "$code" = "401" ] || [ "$code" = "403" ]; then echo "Auth issue checking $URL (HTTP $code). Proceeding to deploy to avoid false skip."; exists=false; fi
