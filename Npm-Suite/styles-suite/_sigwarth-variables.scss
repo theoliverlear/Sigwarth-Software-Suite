@@ -16,6 +16,7 @@ $thinnest-border: min(calc(((0.025vw + 0.025vh) / 2) + 0.025rem), 2px);
 $very-thin-border: calc(((0.05vw + 0.05vh) / 2) + 0.05em);
 $thin-border: calc(((0.1vw + 0.1vh) / 2) + 0.1em);
 
+$zero: 0;
 $sixteenth-percent: simple-calc(0.0625, 0.025);
 $eighth-percent: simple-calc(0.125, 0.05);
 $quarter-percent: simple-calc(0.25, 0.1);
