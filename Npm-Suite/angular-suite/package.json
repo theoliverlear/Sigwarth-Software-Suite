@@ -46,7 +46,7 @@
     "@angular/router": "^20.2.0",
     "@angular/forms": "^20.2.0",
     "@angular/animations": "^20.2.0",
-    "@theoliverlear/styles-suite": "^0.0.9",
+    "@theoliverlear/styles-suite": "^0.1.0",
     "ng-packagr": "^20.2.0",
     "typescript": "^5.5.4"
   },
