@@ -3,6 +3,8 @@
 
 ---
 
+**Full Changelog**: https://github.com/theoliverlear/Sigwarth-Software-Suite/compare/vv.v.v...vv.v.v
+
 ### Module Version
 
 #### Maven 
