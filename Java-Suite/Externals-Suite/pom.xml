@@ -5,24 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.sigwarthsoftware</groupId>
-        <artifactId>sigwarth-software-suite</artifactId>
+        <artifactId>java-suite</artifactId>
         <version>0.0.9</version>
     </parent>
 
-    <artifactId>java-suite</artifactId>
-    <packaging>pom</packaging>
-    <name>Java-Suite</name>
-    <description>Parent for Java libraries in the Sigwarth Software Suite.</description>
-    <modules>
-        <module>Spring-Boot-Suite</module>
-        <module>String-Suite</module>
-        <module>Net-Suite</module>
-        <module>Builder-Suite</module>
-        <module>Externals-Suite</module>
-        <module>Externals-Suite/OpenAI-Suite</module>
-        <module>Externals-Suite/Twitter-Suite</module>
-        <module>Promo-Suite</module>
-    </modules>
+    <artifactId>externals-suite</artifactId>
+    <name>Externals-Suite</name>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
@@ -30,4 +18,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.sigwarthsoftware</groupId>
+            <artifactId>twitter-suite</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sigwarthsoftware</groupId>
+            <artifactId>openai-suite</artifactId>
+            <version>0.0.9</version>
+        </dependency>
+    </dependencies>
 </project>

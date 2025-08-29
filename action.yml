@@ -1,0 +1,192 @@
+name: "Promo Bot"
+description: "Summarize pushes/PR merges, issues, and releases with OpenAI and post to X"
+author: "Sigwarth Software"
+
+branding:
+  icon: "message-circle"
+  color: "blue"
+
+inputs:
+  app_name:
+    description: "Human-friendly product name (e.g. 'Crypto Trader')"
+    required: true
+  mode:
+    description: "Run mode: test (=no post) or prod (=post)"
+    required: false
+    default: test
+  start:
+    description: "Start commit SHA (optional)"
+    required: false
+  end:
+    description: "End commit SHA (optional)"
+    required: false
+  issues_only_from:
+    description: "Only tweet on issues opened by this login (blank = allow any author)"
+    required: false
+    default: theoliverlear
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout caller repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '23'
+        cache: maven
+
+    - name: Resolve mode
+      id: mode
+      shell: bash
+      run: |
+        set -eo pipefail
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          MODE="${{ inputs.mode }}"; [[ -z "$MODE" ]] && MODE="test"
+        elif [[ "${{ github.event_name }}" == "push" ]]; then
+          MODE="prod"
+        elif [[ "${{ github.event_name }}" == "pull_request" && "${{ github.event.action }}" == "closed" && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+          MODE="prod"
+        elif [[ "${{ github.event_name }}" == "issues" && "${{ github.event.action }}" == "opened" ]]; then
+          MODE="prod"
+        elif [[ "${{ github.event_name }}" == "release" && "${{ github.event.action }}" == "published" ]]; then
+          MODE="prod"
+        else
+          MODE="test"
+        fi
+        echo "value=$MODE" >> "$GITHUB_OUTPUT"
+
+    - name: Determine commit range (push / PR / manual)
+      id: range
+      shell: bash
+      run: |
+        set -eo pipefail
+        if [[ "${{ github.event_name }}" == "push" ]]; then
+          START="${{ github.event.before }}"
+          END="${{ github.sha }}"
+          if [[ "$START" == "0000000000000000000000000000000000000000" || -z "$START" ]]; then
+            START="$(git rev-list --max-parents=0 "$END" | tail -n1)"
+          fi
+          echo "start=$START" >> "$GITHUB_OUTPUT"
+          echo "end=$END" >> "$GITHUB_OUTPUT"
+        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          if [[ "${{ github.event.action }}" == "closed" && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+            HEAD="${{ github.event.pull_request.head.sha }}"
+            echo "start=$BASE" >> "$GITHUB_OUTPUT"
+            echo "end=$HEAD" >> "$GITHUB_OUTPUT"
+            echo "merge=${{ github.event.pull_request.merge_commit_sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "start=" >> "$GITHUB_OUTPUT"
+            echo "end=" >> "$GITHUB_OUTPUT"
+          fi
+        elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          START="${{ inputs.start }}"
+          END="${{ inputs.end }}"
+          if [[ -z "$END" ]]; then END="$(git rev-parse HEAD)"; fi
+          if [[ -z "$START" ]]; then
+            START="$(git rev-parse HEAD~1 2>/dev/null || true)"
+            if [[ -z "$START" ]]; then
+              START="$(git rev-list --max-parents=0 "$END" | tail -n1)"
+            fi
+          fi
+          echo "start=$START" >> "$GITHUB_OUTPUT"
+          echo "end=$END" >> "$GITHUB_OUTPUT"
+        else
+          echo "start=" >> "$GITHUB_OUTPUT"
+          echo "end=" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Build Promo Suite
+      shell: bash
+      run: mvn -B -DskipTests -f "${{ github.action_path }}/Java-Suite/Promo-Suite/pom.xml" package
+
+    # ---------- Issues ----------
+    - name: Run IssuePromo
+      if: |
+        github.event_name == 'issues' &&
+        github.event.action == 'opened' &&
+        (inputs.issues_only_from == '' || github.event.issue.user.login == inputs.issues_only_from)
+      working-directory: ${{ github.action_path }}/Java-Suite/Promo-Suite
+      shell: bash
+      run: >
+        mvn -q -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+        -Dexec.mainClass=com.sigwarthsoftware.promo.IssuePromo
+        -Dexec.classpathScope=runtime
+      env:
+        APP_NAME:        ${{ inputs.app_name }}
+        REPO_NAME:       ${{ secrets.REPO_NAME }}
+        PROMO_MODE:      ${{ steps.mode.outputs.value }}
+        ISSUE_TITLE:     ${{ github.event.issue.title }}
+        ISSUE_BODY:      ${{ github.event.issue.body }}
+        ISSUE_TAGS:      ${{ join(github.event.issue.labels.*.name, ',') }}
+        OPENAI_KEY:      ${{ secrets.OPENAI_KEY }}
+        GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
+        X_API_KEY:       ${{ secrets.X_API_KEY }}
+        X_SECRET:        ${{ secrets.X_SECRET }}
+        X_ACCESS_TOKEN:  ${{ secrets.X_ACCESS_TOKEN }}
+        X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+
+    # ---------- Push / PR merged ----------
+    - name: Run PushPromo
+      if: ${{ steps.range.outputs.start != '' && steps.range.outputs.end != '' }}
+      working-directory: ${{ github.action_path }}/Java-Suite/Promo-Suite
+      shell: bash
+      run: >
+        mvn -q -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+        -Dexec.mainClass=com.sigwarthsoftware.promo.PushPromo
+        -Dexec.classpathScope=runtime
+      env:
+        APP_NAME:        ${{ inputs.app_name }}
+        REPO_NAME:       ${{ secrets.REPO_NAME }}
+        PROMO_MODE:      ${{ steps.mode.outputs.value }}
+        START_COMMIT:    ${{ steps.range.outputs.start }}
+        END_COMMIT:      ${{ steps.range.outputs.end }}
+        OPENAI_KEY:      ${{ secrets.OPENAI_KEY }}
+        GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
+        X_API_KEY:       ${{ secrets.X_API_KEY }}
+        X_SECRET:        ${{ secrets.X_SECRET }}
+        X_ACCESS_TOKEN:  ${{ secrets.X_ACCESS_TOKEN }}
+        X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+
+    # ---------- Release ----------
+    - name: Prepare release fields
+      if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+      id: relvars
+      shell: bash
+      run: |
+        set -eo pipefail
+        REL_NAME="${{ github.event.release.tag_name || github.event.release.name }}"
+        if [[ -f "CHANGELOG.md" ]]; then
+          printf "body<<EOF\n" >> "$GITHUB_OUTPUT"
+          cat CHANGELOG.md >> "$GITHUB_OUTPUT"
+          printf "\nEOF\n" >> "$GITHUB_OUTPUT"
+        else
+          printf "body<<EOF\n%s\nEOF\n" "${{ github.event.release.body }}" >> "$GITHUB_OUTPUT"
+        fi
+        echo "name=$REL_NAME" >> "$GITHUB_OUTPUT"
+
+    - name: Run ReleasePromo
+      if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+      working-directory: ${{ github.action_path }}/Java-Suite/Promo-Suite
+      shell: bash
+      run: >
+        mvn -q -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+        -Dexec.mainClass=com.sigwarthsoftware.promo.ReleasePromo
+        -Dexec.classpathScope=runtime
+      env:
+        APP_NAME:        ${{ inputs.app_name }}
+        REPO_NAME:       ${{ secrets.REPO_NAME }}
+        PROMO_MODE:      ${{ steps.mode.outputs.value }}
+        RELEASE_NAME:    ${{ steps.relvars.outputs.name }}
+        RELEASE_BODY:    ${{ steps.relvars.outputs.body }}
+        OPENAI_KEY:      ${{ secrets.OPENAI_KEY }}
+        GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
+        X_API_KEY:       ${{ secrets.X_API_KEY }}
+        X_SECRET:        ${{ secrets.X_SECRET }}
+        X_ACCESS_TOKEN:  ${{ secrets.X_ACCESS_TOKEN }}
+        X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
