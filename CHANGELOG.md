@@ -13,8 +13,11 @@
 |---------------------------|---------|
 | Java-Suite                | v.v.v   |
 | Builder-Suite             | v.v.v   |
+| Externals-Suite           | v.v.v   |
+| OpenAI-Suite              | v.v.v   |
+| Twitter-Suite             | v.v.v   |
 | Net-Suite                 | v.v.v   |
-| OpenAi-Suite              | v.v.v   |
+| Promo-Suite               | v.v.v   |
 | Spring-Boot-Suite         | v.v.v   |
 | Spring-Boot-Communication | v.v.v   |
 | Spring-Boot-Config        | v.v.v   |
@@ -47,12 +50,27 @@
 - Bullet
 - Bullet
 
+### [Externals‑Suite](Java-Suite/Externals-Suite)
+- Bullet
+- Bullet
+- Bullet
+
+### [OpenAI‑Suite](Java-Suite/Externals-Suite/OpenAI-Suite)
+- Bullet
+- Bullet
+- Bullet
+
+### [Twitter‑Suite](Java-Suite/Externals-Suite/Twitter-Suite)
+- Bullet
+- Bullet
+- Bullet
+
 ### [Net‑Suite](Java-Suite/Net-Suite)
 - Bullet
 - Bullet
 - Bullet
 
-### [OpenAi‑Suite](Java-Suite/OpenAi-Suite)
+### [Promo‑Suite](Java-Suite/Promo-Suite)
 - Bullet
 - Bullet
 - Bullet
