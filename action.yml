@@ -143,6 +143,8 @@ runs:
         APP_NAME:        ${{ inputs.app_name }}
         REPO_NAME:       ${{ inputs.repo_name }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
+        RELEASEBOT_MODE: ${{ steps.mode.outputs.value }}
+        MODE:            ${{ steps.mode.outputs.value }}
         ISSUE_TITLE:     ${{ github.event.issue.title }}
         ISSUE_BODY:      ${{ github.event.issue.body }}
         ISSUE_TAGS:      ${{ join(github.event.issue.labels.*.name, ',') }}
@@ -166,6 +168,8 @@ runs:
         APP_NAME:        ${{ inputs.app_name }}
         REPO_NAME:       ${{ inputs.repo_name }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
+        RELEASEBOT_MODE: ${{ steps.mode.outputs.value }}
+        MODE:            ${{ steps.mode.outputs.value }}
         START_COMMIT:    ${{ steps.range.outputs.start }}
         END_COMMIT:      ${{ steps.range.outputs.end }}
         OPENAI_KEY:      ${{ inputs.openai_key }}
@@ -204,6 +208,8 @@ runs:
         APP_NAME:        ${{ inputs.app_name }}
         REPO_NAME:       ${{ inputs.repo_name }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
+        RELEASEBOT_MODE: ${{ steps.mode.outputs.value }}
+        MODE:            ${{ steps.mode.outputs.value }}
         RELEASE_NAME:    ${{ steps.relvars.outputs.name }}
         RELEASE_BODY:    ${{ steps.relvars.outputs.body }}
         OPENAI_KEY:      ${{ inputs.openai_key }}
