@@ -6,6 +6,7 @@ module com.sigwarthsoftware.promo {
     requires annotations;
     requires com.fasterxml.jackson.databind;
     requires static lombok;
+    requires org.slf4j;
     
     exports com.sigwarthsoftware.promo;
     exports com.sigwarthsoftware.promo.github.commit;
