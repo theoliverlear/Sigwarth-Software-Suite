@@ -7,6 +7,7 @@ module com.sigwarthsoftware.twitter {
     requires scribejava.apis;
     requires scribejava.core;
     requires com.sigwarthsoftware.openai;
+    requires org.slf4j;
 
     exports com.sigwarthsoftware.twitter;
     exports com.sigwarthsoftware.twitter.models;
