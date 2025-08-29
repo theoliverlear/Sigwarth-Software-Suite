@@ -43,6 +43,9 @@ inputs:
   x_access_secret:
     description: "X access token secret"
     required: true
+  repo_name:
+    description: "Repository name"
+    required: true
 
 runs:
   using: "composite"
@@ -138,6 +141,7 @@ runs:
         -Dexec.classpathScope=runtime
       env:
         APP_NAME:        ${{ inputs.app_name }}
+        REPO_NAME:       ${{ inputs.repo_name }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
         ISSUE_TITLE:     ${{ github.event.issue.title }}
         ISSUE_BODY:      ${{ github.event.issue.body }}
@@ -160,6 +164,7 @@ runs:
         -Dexec.classpathScope=runtime
       env:
         APP_NAME:        ${{ inputs.app_name }}
+        REPO_NAME:       ${{ inputs.repo_name }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
         START_COMMIT:    ${{ steps.range.outputs.start }}
         END_COMMIT:      ${{ steps.range.outputs.end }}
@@ -197,6 +202,7 @@ runs:
         -Dexec.classpathScope=runtime
       env:
         APP_NAME:        ${{ inputs.app_name }}
+        REPO_NAME:       ${{ inputs.repo_name }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
         RELEASE_NAME:    ${{ steps.relvars.outputs.name }}
         RELEASE_BODY:    ${{ steps.relvars.outputs.body }}
