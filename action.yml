@@ -1,7 +1,6 @@
 name: "Promo Bot"
 description: "Summarize pushes/PR merges, issues, and releases with OpenAI and post to X"
 author: "Sigwarth Software"
-
 branding:
   icon: "message-circle"
   color: "blue"
@@ -24,6 +23,26 @@ inputs:
     description: "Only tweet on issues opened by this login (blank = allow any author)"
     required: false
     default: theoliverlear
+
+  # -- Pass secrets in as inputs (composite actions can't access secrets.* directly)
+  openai_key:
+    description: "OpenAI API key"
+    required: true
+  github_token:
+    description: "GitHub token"
+    required: true
+  x_api_key:
+    description: "X API key"
+    required: true
+  x_secret:
+    description: "X API secret"
+    required: true
+  x_access_token:
+    description: "X access token"
+    required: true
+  x_access_secret:
+    description: "X access token secret"
+    required: true
 
 runs:
   using: "composite"
@@ -119,17 +138,16 @@ runs:
         -Dexec.classpathScope=runtime
       env:
         APP_NAME:        ${{ inputs.app_name }}
-        REPO_NAME:       ${{ secrets.REPO_NAME }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
         ISSUE_TITLE:     ${{ github.event.issue.title }}
         ISSUE_BODY:      ${{ github.event.issue.body }}
         ISSUE_TAGS:      ${{ join(github.event.issue.labels.*.name, ',') }}
-        OPENAI_KEY:      ${{ secrets.OPENAI_KEY }}
-        GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
-        X_API_KEY:       ${{ secrets.X_API_KEY }}
-        X_SECRET:        ${{ secrets.X_SECRET }}
-        X_ACCESS_TOKEN:  ${{ secrets.X_ACCESS_TOKEN }}
-        X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+        OPENAI_KEY:      ${{ inputs.openai_key }}
+        GITHUB_TOKEN:    ${{ inputs.github_token }}
+        X_API_KEY:       ${{ inputs.x_api_key }}
+        X_SECRET:        ${{ inputs.x_secret }}
+        X_ACCESS_TOKEN:  ${{ inputs.x_access_token }}
+        X_ACCESS_SECRET: ${{ inputs.x_access_secret }}
 
     # ---------- Push / PR merged ----------
     - name: Run PushPromo
@@ -142,16 +160,15 @@ runs:
         -Dexec.classpathScope=runtime
       env:
         APP_NAME:        ${{ inputs.app_name }}
-        REPO_NAME:       ${{ secrets.REPO_NAME }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
         START_COMMIT:    ${{ steps.range.outputs.start }}
         END_COMMIT:      ${{ steps.range.outputs.end }}
-        OPENAI_KEY:      ${{ secrets.OPENAI_KEY }}
-        GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
-        X_API_KEY:       ${{ secrets.X_API_KEY }}
-        X_SECRET:        ${{ secrets.X_SECRET }}
-        X_ACCESS_TOKEN:  ${{ secrets.X_ACCESS_TOKEN }}
-        X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+        OPENAI_KEY:      ${{ inputs.openai_key }}
+        GITHUB_TOKEN:    ${{ inputs.github_token }}
+        X_API_KEY:       ${{ inputs.x_api_key }}
+        X_SECRET:        ${{ inputs.x_secret }}
+        X_ACCESS_TOKEN:  ${{ inputs.x_access_token }}
+        X_ACCESS_SECRET: ${{ inputs.x_access_secret }}
 
     # ---------- Release ----------
     - name: Prepare release fields
@@ -180,13 +197,12 @@ runs:
         -Dexec.classpathScope=runtime
       env:
         APP_NAME:        ${{ inputs.app_name }}
-        REPO_NAME:       ${{ secrets.REPO_NAME }}
         PROMO_MODE:      ${{ steps.mode.outputs.value }}
         RELEASE_NAME:    ${{ steps.relvars.outputs.name }}
         RELEASE_BODY:    ${{ steps.relvars.outputs.body }}
-        OPENAI_KEY:      ${{ secrets.OPENAI_KEY }}
-        GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
-        X_API_KEY:       ${{ secrets.X_API_KEY }}
-        X_SECRET:        ${{ secrets.X_SECRET }}
-        X_ACCESS_TOKEN:  ${{ secrets.X_ACCESS_TOKEN }}
-        X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+        OPENAI_KEY:      ${{ inputs.openai_key }}
+        GITHUB_TOKEN:    ${{ inputs.github_token }}
+        X_API_KEY:       ${{ inputs.x_api_key }}
+        X_SECRET:        ${{ inputs.x_secret }}
+        X_ACCESS_TOKEN:  ${{ inputs.x_access_token }}
+        X_ACCESS_SECRET: ${{ inputs.x_access_secret }}
