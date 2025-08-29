@@ -16,9 +16,12 @@
     <modules>
         <module>Spring-Boot-Suite</module>
         <module>String-Suite</module>
-        <module>OpenAi-Suite</module>
         <module>Net-Suite</module>
         <module>Builder-Suite</module>
+        <module>Externals-Suite</module>
+        <module>Externals-Suite/OpenAI-Suite</module>
+        <module>Externals-Suite/Twitter-Suite</module>
+        <module>Promo-Suite</module>
     </modules>
 
     <properties>
