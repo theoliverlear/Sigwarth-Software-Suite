@@ -19,7 +19,7 @@ jobs:
       issues: read
     steps:
       - name: Run Promo Bot
-        uses: theoliverlear/Sigwarth-Software-Suite@708ee9651a2435c8e0fc432eb2af7560894e3ead
+        uses: theoliverlear/Sigwarth-Software-Suite@874d4284cf4065bc49315d68bb620e736b99b612
         with:
           app_name: "Sigwarth Software Suite"
           mode: prod
