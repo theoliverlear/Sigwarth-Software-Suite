@@ -19,7 +19,7 @@ jobs:
       issues: read
     steps:
       - name: Run Promo Bot
-        uses: theoliverlear/Sigwarth-Software-Suite@eb1bbffa1c632fb7fad467e6601ccbc7935e99e9
+        uses: theoliverlear/Sigwarth-Software-Suite@708ee9651a2435c8e0fc432eb2af7560894e3ead
         with:
           app_name: "Sigwarth Software Suite"
           mode: prod
@@ -29,4 +29,4 @@ jobs:
           x_secret:        ${{ secrets.X_SECRET }}
           x_access_token:  ${{ secrets.X_ACCESS_TOKEN }}
           x_access_secret: ${{ secrets.X_ACCESS_SECRET }}
-          repo_name:       ${{ github.repository }}
+          repo_name:       ${{ secrets.REPO_NAME }}
