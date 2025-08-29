@@ -17,9 +17,6 @@ on:
         description: "If set, deploy the aggregator/root POM when artifactId matches this value"
         required: false
         type: string
-    secrets:
-      GITHUB_TOKEN:
-        required: true
 
 jobs:
   build:
@@ -45,7 +42,7 @@ jobs:
 
       - name: Deploy modules (skip if version exists)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           DEPLOY_ROOT_ARTIFACT: ${{ inputs.deploy_root_artifact_id }}
         run: |
