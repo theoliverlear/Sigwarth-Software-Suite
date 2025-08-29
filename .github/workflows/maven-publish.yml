@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/maven-package.yml@8b6c88b6b92ee4076f7b93b8412969aad2b1d93f
+    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/maven-package.yml@d024bd332b95e4640e0838d69fddde6a7cfc549a
     permissions:
       contents: read
       packages: write
