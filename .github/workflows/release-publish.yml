@@ -1,0 +1,35 @@
+name: Release packages
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+# Set permissions for the whole workflow (passed to the called workflow)
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-styles:
+    # <-- job-level uses to call the reusable workflow
+    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@42f194cefc19881545257144943d3efe8cc5c228
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+    with:
+      package_name: "@theoliverlear/styles-suite"
+      package_dir: "Npm-Suite/styles-suite"
+      build_command: ""
+      dist_dir: ""
+      verify_files: "package.json index.scss"
+
+  publish-angular:
+    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@42f194cefc19881545257144943d3efe8cc5c228
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+    with:
+      package_name: "@theoliverlear/angular-suite"
+      package_dir: "Npm-Suite/angular-suite"
+      build_command: "npm run build"
+      dist_dir: "dist"
+      verify_files: "package.json"
