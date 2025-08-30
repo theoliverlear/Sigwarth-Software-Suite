@@ -1,4 +1,3 @@
-# .github/workflows/release-publish.yml
 name: Release
 on:
   workflow_dispatch:
@@ -10,7 +9,7 @@ permissions:
 
 jobs:
   publish-all:
-    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@51d72a1c313325a3c155896202110792e5a68306
+    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@0b601ec81300e56c4614f3c83088a7b068f0b5ad
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
     with:
