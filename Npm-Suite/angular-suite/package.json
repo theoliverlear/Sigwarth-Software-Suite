@@ -1,6 +1,6 @@
 {
   "name": "@theoliverlear/angular-suite",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "A suite of prebuilt Angular components, directives, and services by Sigwarth Software.",
   "keywords": [
     "angular",
@@ -46,7 +46,7 @@
     "@angular/router": "^20.2.0",
     "@angular/forms": "^20.2.0",
     "@angular/animations": "^20.2.0",
-    "@theoliverlear/styles-suite": "^0.1.1",
+    "@theoliverlear/styles-suite": "^0.2.1",
     "ng-packagr": "^20.2.0",
     "typescript": "^5.5.4"
   },
