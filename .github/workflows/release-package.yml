@@ -1,139 +1,119 @@
-name: Release NPM Packages
+name: "NPM Publish (GH Packages)"
+description: "Builds and publishes an NPM package (optionally from dist) to GitHub Packages"
 
-on:
-  release:
-    types: [published]
-  workflow_dispatch:
-    inputs:
-      package:
-        description: 'Package to publish (default: styles-suite)'
-        required: false
-        default: 'styles-suite'
+inputs:
+  package_name:
+    description: "Full scoped package name, e.g. @theoliverlear/styles-suite"
+    required: true
+  package_dir:
+    description: "Directory containing the package"
+    required: true
+  build_command:
+    description: "Build command (empty to skip)"
+    required: false
+    default: ""
+  dist_dir:
+    description: "Directory to publish from ('' = package_dir)"
+    required: false
+    default: ""
+  registry_url:
+    description: "Registry URL"
+    required: false
+    default: "https://npm.pkg.github.com"
+  scope:
+    description: "NPM scope"
+    required: false
+    default: "@theoliverlear"
+  verify_files:
+    description: "Space-separated files to verify exist (relative to package_dir)"
+    required: false
+    default: "package.json"
+  install_command:
+    description: "Install command"
+    required: false
+    default: "npm ci || npm i"
+  skip_if_exists:
+    description: "Skip publish if identical version already exists"
+    required: false
+    default: "true"
 
-jobs:
-  publish-styles-suite:
-    name: Publish styles-suite to GitHub Packages
-    if: ${{ github.event_name == 'release' || github.event.inputs.package == 'styles-suite' || github.event.inputs.package == '' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    defaults:
-      run:
-        working-directory: Npm-Suite/styles-suite
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        registry-url: ${{ inputs.registry_url }}
+        scope: ${{ inputs.scope }}
 
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@theoliverlear'
+    - name: Configure auth for GitHub Packages
+      if: ${{ inputs.registry_url == 'https://npm.pkg.github.com' }}
+      shell: bash
+      run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+      env:
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
 
-      - name: Verify package files exist
-        run: |
-          test -f package.json
-          test -f index.scss
+    - name: Verify files
+      shell: bash
+      working-directory: ${{ inputs.package_dir }}
+      run: |
+        set -euo pipefail
+        for required_file in ${{ inputs.verify_files }}; do
+          test -f "$required_file" || { echo "Missing $required_file"; exit 1; }
+        done
 
-      - name: Install (no-op for SCSS-only)
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci || npm i
-          else
-            npm i --ignore-scripts --no-audit --no-fund || true
-          fi
+    - name: Install
+      shell: bash
+      working-directory: ${{ inputs.package_dir }}
+      run: ${{ inputs.install_command }}
 
-      - name: Check if version already published
-        id: check_version
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          node -e "const fs=require('fs'); const {execSync}=require('child_process'); const v=require('./package.json').version; let exists=false; try{execSync('npm view @theoliverlear/styles-suite@'+v+' version',{stdio:'ignore'}); exists=true;}catch(e){exists=false;} const out=process.env.GITHUB_OUTPUT; if(out){fs.appendFileSync(out,'exists='+exists+'\n');} if(exists){console.log('Version '+v+' already exists on registry. Skipping publish.');}"
+    - name: Build (optional)
+      if: ${{ inputs.build_command != '' }}
+      shell: bash
+      working-directory: ${{ inputs.package_dir }}
+      run: ${{ inputs.build_command }}
 
-      - name: Publish to GitHub Packages
-        if: steps.check_version.outputs.exists == 'false'
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Determine publish directory
+      id: pubdir
+      shell: bash
+      working-directory: ${{ inputs.package_dir }}
+      run: |
+        set -euo pipefail
+        publish_dir="."
+        if [[ -n "${{ inputs.dist_dir }}" ]]; then
+          publish_dir="${{ inputs.dist_dir }}"
+        fi
+        test -f "${publish_dir}/package.json" || { echo "No package.json in ${publish_dir}"; exit 1; }
+        echo "dir=${publish_dir}" >> "$GITHUB_OUTPUT"
 
-      - name: Skip publish (already exists)
-        if: steps.check_version.outputs.exists == 'true'
-        run: |
-          node -e "console.log('Skipped publish: @theoliverlear/styles-suite@' + require('./package.json').version + ' already exists')"
+    - name: Check existing version
+      id: exists
+      if: ${{ inputs.skip_if_exists == 'true' }}
+      shell: bash
+      working-directory: ${{ inputs.package_dir }}
+      run: |
+        set -euo pipefail
+        pkg="${{ inputs.package_name }}"
+        version=$(node -e "console.log(require('./package.json').version)")
+        echo "Local version: ${version}"
+        if npm view "${pkg}@${version}" version >/dev/null 2>&1; then
+          echo "exists=true" >> "$GITHUB_OUTPUT"
+          echo "Version ${version} of ${pkg} exists. Skipping."
+        else
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+        fi
 
-      - name: Output published package info
-        if: steps.check_version.outputs.exists == 'false'
-        run: |
-          node -e "console.log('Published @theoliverlear/styles-suite@' + require('./package.json').version)"
+    - name: Publish
+      if: ${{ inputs.skip_if_exists != 'true' || steps.exists.outputs.exists == 'false' }}
+      shell: bash
+      working-directory: ${{ inputs.package_dir }}/${{ steps.pubdir.outputs.dir }}
+      env:
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
+      run: npm publish
 
-  publish-angular-suite:
-    name: Build and publish angular-suite to GitHub Packages
-    if: ${{ github.event_name == 'release' || github.event.inputs.package == 'angular-suite' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    defaults:
-      run:
-        working-directory: Npm-Suite/angular-suite
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Configure npm registries
-        run: |
-          npm config set registry https://registry.npmjs.org
-          npm config set @theoliverlear:registry https://npm.pkg.github.com
-
-      - name: Authenticate to GitHub Packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
-
-      - name: Check if version already published (angular-suite)
-        id: check_version_angular
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          node -e "const fs=require('fs'); const {execSync}=require('child_process'); const v=require('./package.json').version; let exists=false; try{execSync('npm view @theoliverlear/angular-suite@'+v+' version',{stdio:'ignore'}); exists=true;}catch(e){exists=false;} const out=process.env.GITHUB_OUTPUT; if(out){fs.appendFileSync(out,'exists='+exists+'\n');} if(exists){console.log('Version '+v+' already exists on registry. Skipping build/publish.');}"
-
-      - name: Install dependencies
-        if: steps.check_version_angular.outputs.exists == 'false'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm ci || npm i
-
-      - name: Build angular-suite (ng-packagr)
-        if: steps.check_version_angular.outputs.exists == 'false'
-        run: npm run build
-
-      - name: Verify dist output
-        if: steps.check_version_angular.outputs.exists == 'false'
-        run: |
-          test -f dist/package.json
-
-      - name: Publish from dist to GitHub Packages
-        if: steps.check_version_angular.outputs.exists == 'false'
-        working-directory: Npm-Suite/angular-suite/dist
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Skip publish (already exists)
-        if: steps.check_version_angular.outputs.exists == 'true'
-        run: |
-          node -e "console.log('Skipped publish: @theoliverlear/angular-suite@' + require('./package.json').version + ' already exists')"
-
-      - name: Output published package info
-        if: steps.check_version_angular.outputs.exists == 'false'
-        run: |
-          node -e "console.log('Published @theoliverlear/angular-suite@' + require('./dist/package.json').version)"
+    - name: Output info
+      if: ${{ inputs.skip_if_exists != 'true' || steps.exists.outputs.exists == 'false' }}
+      shell: bash
+      working-directory: ${{ inputs.package_dir }}/${{ steps.pubdir.outputs.dir }}
+      run: node -e "const p=require('./package.json'); console.log('Published', p.name+'@'+p.version)"
