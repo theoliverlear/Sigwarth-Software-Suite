@@ -4,7 +4,6 @@
 
 ss-anchor {
     @include flex(center, center, row);
-    //@extend %fill-container;
     &.link-button {
         @extend ss-button;
     }
