@@ -1,9 +1,9 @@
 import {Route, Routes} from "@angular/router";
 
-const isDevelopment = true;
+let isDevelopment = true;
 
 
 
-export const routes: Routes = [
+export let routes: Routes = [
 
 ];
