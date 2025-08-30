@@ -1,0 +1,12 @@
+<!-- subtitle.component.html -->
+<ng-container>
+    <ng-container [ngSwitch]="tagType" class="title-text-div">
+        <h1  *ngSwitchCase="TagType.H1">{{ text }}</h1>
+        <h2  *ngSwitchCase="TagType.H2">{{ text }}</h2>
+        <h3  *ngSwitchCase="TagType.H3">{{ text }}</h3>
+        <h4  *ngSwitchCase="TagType.H4">{{ text }}</h4>
+        <h5  *ngSwitchCase="TagType.H5">{{ text }}</h5>
+        <h6  *ngSwitchCase="TagType.H6">{{ text }}</h6>
+        <p   *ngSwitchDefault>{{ text }}</p>
+    </ng-container>
+</ng-container>
