@@ -40,22 +40,17 @@ on:
         type: string
         default: "package.json"
       install_command:
-        description: "Install mode: 'auto' (default), a custom command, or 'skip'"
+        description: "Install: 'skip' to skip, or custom command. Default uses npm i without lockfile/audit/fund."
         required: false
         type: string
-        default: "auto"
+        default: "npm i --no-audit --no-fund --no-package-lock"
       skip_if_exists:
         description: "Skip if same version exists"
         required: false
         type: string
         default: "true"
 
-      # MATRIX MODE: pass a JSON array of objects with keys above
-      # Example:
-      # [
-      #   {"package_name":"@theoliverlear/styles-suite","package_dir":"Npm-Suite/styles-suite","verify_files":"package.json index.scss"},
-      #   {"package_name":"@theoliverlear/angular-suite","package_dir":"Npm-Suite/angular-suite","build_command":"npm run build","dist_dir":"dist"}
-      # ]
+      # MATRIX MODE: JSON array of configs (keys match the single-package inputs)
       package_matrix:
         description: "JSON array of package configs (enables matrix mode)"
         required: false
@@ -83,10 +78,8 @@ jobs:
           node-version: 20
           registry-url: ${{ inputs.registry_url }}
           scope: ${{ inputs.scope }}
-          cache: 'npm'
-          cache-dependency-path: ${{ inputs.package_dir }}/package-lock.json
 
-      - name: Configure auth for GitHub Packages
+      - name: Authenticate to GitHub Packages
         if: ${{ inputs.registry_url == 'https://npm.pkg.github.com' }}
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" >> ~/.npmrc
 
@@ -99,26 +92,14 @@ jobs:
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
 
-      - name: Install (auto / custom / skip)
+      - name: Install
+        if: ${{ inputs.install_command != 'skip' }}
         working-directory: ${{ inputs.package_dir }}
         shell: bash
         run: |
           set -euo pipefail
-          mode='${{ inputs.install_command }}'
-          if [[ "$mode" == "skip" ]]; then
-            echo "Skipping install as requested"
-          elif [[ "$mode" != "auto" ]]; then
-            echo "Running custom install: $mode"
-            eval "$mode"
-          else
-            if [[ -f package-lock.json || -f npm-shrinkwrap.json ]]; then
-              echo "Lockfile found; using npm ci"
-              npm ci
-            else
-              echo "No lockfile; using npm i (no-audit, no-fund)"
-              npm i --no-audit --no-fund
-            fi
-          fi
+          echo "Running: ${{ inputs.install_command }}"
+          eval "${{ inputs.install_command }}"
 
       - name: Build (optional)
         if: ${{ inputs.build_command != '' }}
@@ -186,10 +167,8 @@ jobs:
           node-version: 20
           registry-url: ${{ matrix.cfg.registry_url || 'https://npm.pkg.github.com' }}
           scope: ${{ matrix.cfg.scope || '@theoliverlear' }}
-          cache: 'npm'
-          cache-dependency-path: ${{ matrix.cfg.package_dir }}/package-lock.json
 
-      - name: Configure auth for GitHub Packages
+      - name: Authenticate to GitHub Packages
         if: ${{ (matrix.cfg.registry_url || 'https://npm.pkg.github.com') == 'https://npm.pkg.github.com' }}
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" >> ~/.npmrc
 
@@ -203,26 +182,15 @@ jobs:
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
 
-      - name: Install (auto / custom / skip)
+      - name: Install
+        if: ${{ (matrix.cfg.install_command || 'npm i --no-audit --no-fund --no-package-lock') != 'skip' }}
         working-directory: ${{ matrix.cfg.package_dir }}
         shell: bash
         run: |
           set -euo pipefail
-          mode='${{ matrix.cfg.install_command || 'auto' }}'
-          if [[ "$mode" == "skip" ]]; then
-            echo "Skipping install as requested"
-          elif [[ "$mode" != "auto" ]]; then
-            echo "Running custom install: $mode"
-            eval "$mode"
-          else
-            if [[ -f package-lock.json || -f npm-shrinkwrap.json ]]; then
-              echo "Lockfile found; using npm ci"
-              npm ci
-            else
-              echo "No lockfile; using npm i (no-audit, no-fund)"
-              npm i --no-audit --no-fund
-            fi
-          fi
+          cmd='${{ matrix.cfg.install_command || 'npm i --no-audit --no-fund --no-package-lock' }}'
+          echo "Running: $cmd"
+          eval "$cmd"
 
       - name: Build (optional)
         if: ${{ matrix.cfg.build_command && matrix.cfg.build_command != '' }}
@@ -252,7 +220,7 @@ jobs:
           version=$(node -e "console.log(require('./package.json').version)")
           if npm view "${pkg}@${version}" version >/dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "Version ${version} of ${pkg} exists. Skipping."
+            echo "Version ${version} exists. Skipping."
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
