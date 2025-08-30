@@ -1,5 +1,14 @@
 @use "sigwarth-functions" as *;
 
+$almost-white: #f8f9fa;
+$alabaster-stone: hsl(40, 21%, 89%);
+$black-shadow: rgba(0, 0, 0, 0.1);
+$light-charcoal: hsl(0, 0%, 20%);
+$charcoal: hsl(0, 0%, 9%);
+$neutral-black: hsl(345, 6%, 13%);
+$absolute-black: hsl(0, 0%, 0%);
+$darker-black-shadow: rgba(0, 0, 0, 0.2);
+
 $h1-font-size: min(simple-pixel-calc(6, 12), 140px);
 $h2-font-size: min(simple-pixel-calc(5, 10), 120px);
 $h3-font-size: min(simple-pixel-calc(4,  8), 100px);
