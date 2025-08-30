@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.sigwarthsoftware</groupId>
         <artifactId>java-suite</artifactId>
-        <version>0.0.10</version>
+        <version>0.0.11</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>twitter-suite</artifactId>
     <name>Twitter-Suite</name>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.sigwarthsoftware</groupId>
             <artifactId>openai-suite</artifactId>
-            <version>0.0.10</version>
+            <version>0.0.11</version>
         </dependency>
         <dependency>
             <groupId>com.openai</groupId>

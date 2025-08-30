@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.sigwarthsoftware</groupId>
         <artifactId>java-suite</artifactId>
-        <version>0.0.10</version>
+        <version>0.0.11</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>openai-suite</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.11</version>
     <name>OpenAI-Suite</name>
     <description>Wrappers for calling the OpenAI API using Java HttpClient.</description>
 
