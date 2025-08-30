@@ -1,240 +1,139 @@
-name: Reusable NPM Publish
+name: Release NPM Packages
 
 on:
-  workflow_call:
+  release:
+    types: [published]
+  workflow_dispatch:
     inputs:
-      # SINGLE-PACKAGE MODE (leave package_matrix empty)
-      package_name:
-        description: "Full scoped name, e.g. @theoliverlear/styles-suite"
+      package:
+        description: 'Package to publish (default: styles-suite)'
         required: false
-        type: string
-        default: ""
-      package_dir:
-        description: "Directory containing the package"
-        required: false
-        type: string
-        default: ""
-      build_command:
-        description: "Build command (empty to skip)"
-        required: false
-        type: string
-        default: ""
-      dist_dir:
-        description: "Directory to publish from ('' = package_dir)"
-        required: false
-        type: string
-        default: ""
-      registry_url:
-        description: "Registry URL"
-        required: false
-        type: string
-        default: "https://npm.pkg.github.com"
-      scope:
-        description: "NPM scope"
-        required: false
-        type: string
-        default: "@theoliverlear"
-      verify_files:
-        description: "Space-separated files to verify"
-        required: false
-        type: string
-        default: "package.json"
-      install_command:
-        description: "Install: 'skip' to skip, or custom command. Default uses npm i without lockfile/audit/fund."
-        required: false
-        type: string
-        default: "npm i --no-audit --no-fund --no-package-lock"
-      skip_if_exists:
-        description: "Skip if same version exists"
-        required: false
-        type: string
-        default: "true"
-
-      # MATRIX MODE: JSON array of configs (keys match the single-package inputs)
-      package_matrix:
-        description: "JSON array of package configs (enables matrix mode)"
-        required: false
-        type: string
-        default: ""
-
-    secrets:
-      NODE_AUTH_TOKEN:
-        required: true
+        default: 'styles-suite'
 
 jobs:
-  # ---------- SINGLE PACKAGE ----------
-  publish_single:
-    if: ${{ inputs.package_matrix == '' }}
+  publish-styles-suite:
+    name: Publish styles-suite to GitHub Packages
+    if: ${{ github.event_name == 'release' || github.event.inputs.package == 'styles-suite' || github.event.inputs.package == '' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    defaults:
+      run:
+        working-directory: Npm-Suite/styles-suite
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: ${{ inputs.registry_url }}
-          scope: ${{ inputs.scope }}
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@theoliverlear'
 
-      - name: Authenticate to GitHub Packages
-        if: ${{ inputs.registry_url == 'https://npm.pkg.github.com' }}
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" >> ~/.npmrc
-
-      - name: Verify files
-        working-directory: ${{ inputs.package_dir }}
-        shell: bash
+      - name: Verify package files exist
         run: |
-          set -euo pipefail
-          for f in ${{ inputs.verify_files }}; do
-            test -f "$f" || { echo "Missing $f"; exit 1; }
-          done
+          test -f package.json
+          test -f index.scss
 
-      - name: Install
-        if: ${{ inputs.install_command != 'skip' }}
-        working-directory: ${{ inputs.package_dir }}
-        shell: bash
+      - name: Install (no-op for SCSS-only)
         run: |
-          set -euo pipefail
-          echo "Running: ${{ inputs.install_command }}"
-          eval "${{ inputs.install_command }}"
-
-      - name: Build (optional)
-        if: ${{ inputs.build_command != '' }}
-        working-directory: ${{ inputs.package_dir }}
-        shell: bash
-        run: ${{ inputs.build_command }}
-
-      - name: Determine publish directory
-        id: pubdir
-        working-directory: ${{ inputs.package_dir }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          dir="."
-          if [[ -n "${{ inputs.dist_dir }}" ]]; then dir="${{ inputs.dist_dir }}"; fi
-          test -f "${dir}/package.json" || { echo "No package.json in ${dir}"; exit 1; }
-          echo "dir=${dir}" >> "$GITHUB_OUTPUT"
-
-      - name: Check existing version
-        id: exists
-        if: ${{ inputs.skip_if_exists == 'true' }}
-        working-directory: ${{ inputs.package_dir }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          pkg="${{ inputs.package_name }}"
-          version=$(node -e "console.log(require('./package.json').version)")
-          if npm view "${pkg}@${version}" version >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "Version ${version} of ${pkg} exists. Skipping."
+          if [ -f package-lock.json ]; then
+            npm ci || npm i
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            npm i --ignore-scripts --no-audit --no-fund || true
           fi
 
-      - name: Publish
-        if: ${{ inputs.skip_if_exists != 'true' || steps.exists.outputs.exists == 'false' }}
-        working-directory: ${{ inputs.package_dir }}/${{ steps.pubdir.outputs.dir }}
+      - name: Check if version already published
+        id: check_version
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-        shell: bash
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node -e "const fs=require('fs'); const {execSync}=require('child_process'); const v=require('./package.json').version; let exists=false; try{execSync('npm view @theoliverlear/styles-suite@'+v+' version',{stdio:'ignore'}); exists=true;}catch(e){exists=false;} const out=process.env.GITHUB_OUTPUT; if(out){fs.appendFileSync(out,'exists='+exists+'\n');} if(exists){console.log('Version '+v+' already exists on registry. Skipping publish.');}"
+
+      - name: Publish to GitHub Packages
+        if: steps.check_version.outputs.exists == 'false'
         run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Output info
-        if: ${{ inputs.skip_if_exists != 'true' || steps.exists.outputs.exists == 'false' }}
-        working-directory: ${{ inputs.package_dir }}/${{ steps.pubdir.outputs.dir }}
-        shell: bash
-        run: node -e "const p=require('./package.json'); console.log('Published', p.name+'@'+p.version)"
+      - name: Skip publish (already exists)
+        if: steps.check_version.outputs.exists == 'true'
+        run: |
+          node -e "console.log('Skipped publish: @theoliverlear/styles-suite@' + require('./package.json').version + ' already exists')"
 
-  # ---------- MATRIX (MULTI-PACKAGE) ----------
-  publish_matrix:
-    if: ${{ inputs.package_matrix != '' }}
+      - name: Output published package info
+        if: steps.check_version.outputs.exists == 'false'
+        run: |
+          node -e "console.log('Published @theoliverlear/styles-suite@' + require('./package.json').version)"
+
+  publish-angular-suite:
+    name: Build and publish angular-suite to GitHub Packages
+    if: ${{ github.event_name == 'release' || github.event.inputs.package == 'angular-suite' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    strategy:
-      matrix:
-        cfg: ${{ fromJSON(inputs.package_matrix) }}
+    defaults:
+      run:
+        working-directory: Npm-Suite/angular-suite
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: ${{ matrix.cfg.registry_url || 'https://npm.pkg.github.com' }}
-          scope: ${{ matrix.cfg.scope || '@theoliverlear' }}
+
+      - name: Configure npm registries
+        run: |
+          npm config set registry https://registry.npmjs.org
+          npm config set @theoliverlear:registry https://npm.pkg.github.com
 
       - name: Authenticate to GitHub Packages
-        if: ${{ (matrix.cfg.registry_url || 'https://npm.pkg.github.com') == 'https://npm.pkg.github.com' }}
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" >> ~/.npmrc
-
-      - name: Verify files
-        working-directory: ${{ matrix.cfg.package_dir }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          verify="${{ matrix.cfg.verify_files || 'package.json' }}"
-          for f in $verify; do
-            test -f "$f" || { echo "Missing $f"; exit 1; }
-          done
-
-      - name: Install
-        if: ${{ (matrix.cfg.install_command || 'npm i --no-audit --no-fund --no-package-lock') != 'skip' }}
-        working-directory: ${{ matrix.cfg.package_dir }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          cmd='${{ matrix.cfg.install_command || 'npm i --no-audit --no-fund --no-package-lock' }}'
-          echo "Running: $cmd"
-          eval "$cmd"
-
-      - name: Build (optional)
-        if: ${{ matrix.cfg.build_command && matrix.cfg.build_command != '' }}
-        working-directory: ${{ matrix.cfg.package_dir }}
-        shell: bash
-        run: ${{ matrix.cfg.build_command }}
-
-      - name: Determine publish directory
-        id: pubdir
-        working-directory: ${{ matrix.cfg.package_dir }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          dir="."
-          if [[ -n "${{ matrix.cfg.dist_dir || '' }}" ]]; then dir="${{ matrix.cfg.dist_dir }}"; fi
-          test -f "${dir}/package.json" || { echo "No package.json in ${dir}"; exit 1; }
-          echo "dir=${dir}" >> "$GITHUB_OUTPUT"
-
-      - name: Check existing version
-        id: exists
-        if: ${{ (matrix.cfg.skip_if_exists || 'true') == 'true' }}
-        working-directory: ${{ matrix.cfg.package_dir }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          pkg="${{ matrix.cfg.package_name }}"
-          version=$(node -e "console.log(require('./package.json').version)")
-          if npm view "${pkg}@${version}" version >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "Version ${version} exists. Skipping."
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Publish
-        if: ${{ (matrix.cfg.skip_if_exists || 'true') != 'true' || steps.exists.outputs.exists == 'false' }}
-        working-directory: ${{ matrix.cfg.package_dir }}/${{ steps.pubdir.outputs.dir }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-        shell: bash
-        run: npm publish
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
 
-      - name: Output info
-        if: ${{ (matrix.cfg.skip_if_exists || 'true') != 'true' || steps.exists.outputs.exists == 'false' }}
-        working-directory: ${{ matrix.cfg.package_dir }}/${{ steps.pubdir.outputs.dir }}
-        shell: bash
-        run: node -e "const p=require('./package.json'); console.log('Published', p.name+'@'+p.version)"
+      - name: Check if version already published (angular-suite)
+        id: check_version_angular
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node -e "const fs=require('fs'); const {execSync}=require('child_process'); const v=require('./package.json').version; let exists=false; try{execSync('npm view @theoliverlear/angular-suite@'+v+' version',{stdio:'ignore'}); exists=true;}catch(e){exists=false;} const out=process.env.GITHUB_OUTPUT; if(out){fs.appendFileSync(out,'exists='+exists+'\n');} if(exists){console.log('Version '+v+' already exists on registry. Skipping build/publish.');}"
+
+      - name: Install dependencies
+        if: steps.check_version_angular.outputs.exists == 'false'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm ci || npm i
+
+      - name: Build angular-suite (ng-packagr)
+        if: steps.check_version_angular.outputs.exists == 'false'
+        run: npm run build
+
+      - name: Verify dist output
+        if: steps.check_version_angular.outputs.exists == 'false'
+        run: |
+          test -f dist/package.json
+
+      - name: Publish from dist to GitHub Packages
+        if: steps.check_version_angular.outputs.exists == 'false'
+        working-directory: Npm-Suite/angular-suite/dist
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip publish (already exists)
+        if: steps.check_version_angular.outputs.exists == 'true'
+        run: |
+          node -e "console.log('Skipped publish: @theoliverlear/angular-suite@' + require('./package.json').version + ' already exists')"
+
+      - name: Output published package info
+        if: steps.check_version_angular.outputs.exists == 'false'
+        run: |
+          node -e "console.log('Published @theoliverlear/angular-suite@' + require('./dist/package.json').version)"
