@@ -9,12 +9,12 @@ permissions:
 
 jobs:
   publish-all:
-    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@0b601ec81300e56c4614f3c83088a7b068f0b5ad
+    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@e8ac8765e302167af922dcbca1c1ca1fac83fed7
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
     with:
       package_matrix: |
         [
-          {"package_name":"@theoliverlear/styles-suite","package_dir":"Npm-Suite/styles-suite","verify_files":"package.json index.scss"},
+          {"package_name":"@theoliverlear/styles-suite","package_dir":"Npm-Suite/styles-suite","install_command":"skip","verify_files":"package.json index.scss"},
           {"package_name":"@theoliverlear/angular-suite","package_dir":"Npm-Suite/angular-suite","build_command":"npm run build","dist_dir":"dist"}
         ]
