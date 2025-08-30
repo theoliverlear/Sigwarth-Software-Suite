@@ -10,6 +10,13 @@ on:
   release:
     types: [ published ]
   workflow_dispatch:
+    inputs:
+      start:
+        description: 'Start commit SHA (optional)'
+        required: false
+      end:
+        description: 'End commit SHA (optional)'
+        required: false
 
 jobs:
   promo:
@@ -23,6 +30,8 @@ jobs:
         with:
           app_name: "Sigwarth Software Suite"
           mode: prod
+          start:           ${{ github.event.inputs.start }}
+          end:             ${{ github.event.inputs.end }}
           openai_key:      ${{ secrets.OPENAI_KEY }}
           github_token:    ${{ secrets.GITHUB_TOKEN }}
           x_api_key:       ${{ secrets.X_API_KEY }}
