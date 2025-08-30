@@ -1,20 +1,40 @@
-name: Release
+name: Release Publish
+
 on:
   workflow_dispatch:
+    inputs:
+      package:
+        description: "Package to publish (styles-suite, angular-suite, all)"
+        required: false
+        default: 'all'
   release:
     types: [published]
-permissions:
-  contents: read
-  packages: write
 
 jobs:
-  publish-all:
-    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@e8ac8765e302167af922dcbca1c1ca1fac83fed7
-    secrets:
-      NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+  publish-styles-suite:
+    if: ${{ github.event_name == 'release' || github.event.inputs.package == 'all' || github.event.inputs.package == 'styles-suite' || github.event.inputs.package == '' }}
+    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@main
+    permissions:
+      contents: read
+      packages: write
     with:
-      package_matrix: |
-        [
-          {"package_name":"@theoliverlear/styles-suite","package_dir":"Npm-Suite/styles-suite","install_command":"skip","verify_files":"package.json index.scss"},
-          {"package_name":"@theoliverlear/angular-suite","package_dir":"Npm-Suite/angular-suite","build_command":"npm run build","dist_dir":"dist"}
-        ]
+      package_name: '@theoliverlear/styles-suite'
+      package_dir: 'Npm-Suite/styles-suite'
+      scss_package: true
+      node_version: '20'
+    secrets: inherit
+
+  publish-angular-suite:
+    if: ${{ github.event_name == 'release' || github.event.inputs.package == 'all' || github.event.inputs.package == 'angular-suite' }}
+    uses: theoliverlear/Sigwarth-Software-Suite/.github/workflows/release-package.yml@main
+    permissions:
+      contents: read
+      packages: write
+    with:
+      package_name: '@theoliverlear/angular-suite'
+      package_dir: 'Npm-Suite/angular-suite'
+      scss_package: false
+      build_script: 'npm run build'
+      dist_dir: 'dist'
+      node_version: '20'
+    secrets: inherit
