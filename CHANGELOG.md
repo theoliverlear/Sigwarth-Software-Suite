@@ -13,6 +13,7 @@
 |---------------------------|---------|
 | Java-Suite                | v.v.v   |
 | Builder-Suite             | v.v.v   |
+| Changelog-Suite           | v.v.v   |
 | Externals-Suite           | v.v.v   |
 | OpenAI-Suite              | v.v.v   |
 | Twitter-Suite             | v.v.v   |
@@ -46,6 +47,11 @@
 ## [Maven](Java-Suite)
 
 ### [Builder‑Suite](Java-Suite/Builder-Suite)
+- Bullet
+- Bullet
+- Bullet
+
+### [Changelog‑Suite](Java-Suite/Changelog-Suite)
 - Bullet
 - Bullet
 - Bullet
