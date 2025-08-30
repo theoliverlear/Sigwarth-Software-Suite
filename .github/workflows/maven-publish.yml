@@ -14,6 +14,4 @@ jobs:
     with:
       java-version: '23'
       distribution: temurin
-      # Set if you want the special root-POM deploy path:
-      # deploy_root_artifact_id: 'crypto-trader'
     secrets: inherit
