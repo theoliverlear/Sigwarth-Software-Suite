@@ -4,6 +4,7 @@ public enum PushPrompts {
     SYSTEM("""
             Given a Git commit messages, write ONE tweet that highlights user-visible improvements (not filenames), avoids jargon, and reads naturally.
             - If work is done specifically for a certain module (ex. Testing, Website, Api modules, etc.), specify it in the post.
+            - Prefer features over vague themes.
             - Refer to it in a non technical way like "the website module" or "the API library".
             - Some specifics can be added as long as they are in layman's terms like "new desktop window" or "API services".
             - Some readers may be developers, so sparingly throw in specific jargon if it fits in a general sense.
