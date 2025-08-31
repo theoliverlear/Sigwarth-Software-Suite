@@ -6,10 +6,10 @@
     <parent>
         <groupId>com.sigwarthsoftware</groupId>
         <artifactId>java-suite</artifactId>
-        <version>0.0.12</version>
+        <version>0.0.13</version>
     </parent>
 
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <artifactId>promo-suite</artifactId>
     <name>Promo-Suite</name>
 
