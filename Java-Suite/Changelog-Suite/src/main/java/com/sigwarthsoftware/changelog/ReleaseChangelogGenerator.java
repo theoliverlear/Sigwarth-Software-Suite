@@ -7,9 +7,12 @@ import com.sigwarthsoftware.openai.OpenAiChat;
 import com.sigwarthsoftware.promo.github.commit.CommitCapture;
 import com.sigwarthsoftware.promo.github.commit.CommitRange;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,16 +33,32 @@ public class ReleaseChangelogGenerator {
     }
     
     public static String getTemplateFromUrl() {
-        final String url = "https://raw.githubusercontent.com/theoliverlear/%s/refs/heads/main/CHANGELOG.md".formatted(System.getenv("REPO_NAME"));
-        HttpPost httpPost = new HttpPost(url);
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            String content = httpClient.execute(httpPost, response -> {
-                return response.getEntity().getContent().toString();
-            });
-            return content;
-        } catch (IOException exception) {
-            throw new IllegalStateException("Error in reading changelog file.", exception);
+        String[] possibleBranches = {"main", "master"};
+        String response = null;
+        for (String branch : possibleBranches) {
+            // https://raw.githubusercontent.com/theoliverlear/Sigwarth-Software-Suite/refs/heads/master/CHANGELOG.md
+            String url = "https://raw.githubusercontent.com/theoliverlear/%s/refs/heads/%s/CHANGELOG.md".formatted(System.getenv("REPO_NAME"), branch);
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.addHeader("User-Agent", "Sigwarth-Changelog/0.0.2 (+https://github.com/theoliverlear)");
+            httpGet.addHeader("Accept", "text/plain; charset=utf-8");
+            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
+                    System.out.println(httpResponse.getEntity().getContent().toString());
+                    int statusCode = httpResponse.getStatusLine().getStatusCode();
+                    if (statusCode == 200 && httpResponse.getEntity() != null) {
+                        response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+                        break;
+                    }
+                }
+
+            } catch (IOException exception) {
+                continue;
+            }
         }
+        if (response == null || response.isBlank()) {
+            throw new IllegalStateException("Unable to find changelog file in any of the branches.");
+        }
+        return response;
     }
 
     public static String getChangelog(CommitRange commitRange, String releaseVersion) {
