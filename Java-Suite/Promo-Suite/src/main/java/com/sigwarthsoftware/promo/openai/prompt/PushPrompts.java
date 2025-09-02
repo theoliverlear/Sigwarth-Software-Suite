@@ -1,6 +1,7 @@
 package com.sigwarthsoftware.promo.openai.prompt;
 
 public enum PushPrompts {
+    //============================-Constants-=================================
     SYSTEM("""
             Given a Git commit messages, write ONE tweet that highlights user-visible improvements (not filenames), avoids jargon, and reads naturally.
             - If work is done specifically for a certain module (ex. Testing, Website, Api modules, etc.), specify it in the post.
@@ -13,15 +14,17 @@ public enum PushPrompts {
             Focus on what a user gets ((in no order of importance) speed, reliability, new feature, clarity, quality, bug fix, etc.).
             Try to be as specific as you can while being approachable in tone.
             Find the tangible benefit and promote it.
-            Avoid internal paths or test-only noise. 
+            Avoid internal paths or test-only noise.
             At most one short hashtag related to the commit aimed at maximizing reach.
             Most importantly, the Tweet must be relevant to the commit messages.
             Diff (commit messages): \n""");
+    
     private final String text;
+    //===========================-Constructors-===============================
     PushPrompts(String text) {
         this.text = text;
     }
-    
+    //=============================-Getters-==================================
     public String getText() {
         return this.text;
     }

@@ -3,15 +3,16 @@ package com.sigwarthsoftware.promo.openai;
 import com.sigwarthsoftware.openai.OpenAiChat;
 
 public class TwitterAiChat extends OpenAiChat {
+    //===========================-Constructors-===============================
     public TwitterAiChat() {
         super();
     }
-
+    //--------------------------------Chat------------------------------------
     @Override
     public String chat(String systemMessage, String userMessage) {
         String appName = System.getenv("APP_NAME");
         systemMessage = """
-             You are ReleaseBot, a concise release promo copywriter.
+             You are PromoBot, a concise release promo copywriter.
              Write ONE tweet about user-visible improvements. No quotes.
              You are providing updates about the app %s.
              Include "%s" in the post.
