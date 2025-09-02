@@ -38,12 +38,12 @@
         <dependency>
             <groupId>com.sigwarthsoftware</groupId>
             <artifactId>promo-suite</artifactId>
-            <version>0.0.6</version>
+            <version>0.0.7</version>
         </dependency>
         <dependency>
             <groupId>com.sigwarthsoftware</groupId>
             <artifactId>twitter-suite</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

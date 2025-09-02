@@ -12,7 +12,7 @@
 
     <artifactId>twitter-suite</artifactId>
     <name>Twitter-Suite</name>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
