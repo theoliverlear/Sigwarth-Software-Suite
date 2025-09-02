@@ -25,7 +25,7 @@ import {SsTitleComponent} from "../ss-title/ss-title.component";
     styleUrls: ['./ss-button.component.scss']
 })
 export class SsButtonComponent implements OnInit{
-    @Input() text: ButtonText;
+    @Input() text: ButtonText | string;
     @Input() size: ElementSize;
     @Input() buttonPosition: ButtonPosition;
     @HostBinding('style.align-self') alignSelf: string;
