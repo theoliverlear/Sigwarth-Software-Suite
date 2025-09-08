@@ -1,10 +1,10 @@
 <a [target]="elementLink.targetType" class="link-no-style">
-    @if (hasText) {
+    @if (!hasText) {
         <ng-container>
             <ng-content></ng-content>
         </ng-container>
     }
-    @if (!hasText) {
+    @if (hasText) {
         <ng-container>
             @switch (displayTagType) {
                 @case (TagType.H1) { <h1>{{ displayText }}</h1> }
