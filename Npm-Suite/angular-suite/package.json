@@ -1,6 +1,6 @@
 {
   "name": "@theoliverlear/angular-suite",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "A suite of prebuilt Angular components, directives, and services by Sigwarth Software.",
   "keywords": [
     "angular",
@@ -30,8 +30,8 @@
     "@angular/common": ">=18.0.0",
     "@angular/core": ">=18.0.0",
     "@angular/forms": ">=18.0.0",
-    "@angular/router": ">=18.0.0",
     "@angular/platform-browser": ">=18.0.0",
+    "@angular/router": ">=18.0.0",
     "crypto-js": "^4.2.0",
     "rxjs": ">=7.8.0",
     "zone.js": ">=0.15.0"
@@ -47,6 +47,7 @@
     "@angular/forms": "^20.2.0",
     "@angular/router": "^20.2.0",
     "@theoliverlear/styles-suite": "^0.2.1",
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^20.12.12",
     "crypto-js": "^4.2.0",
     "ng-packagr": "^20.2.0",
@@ -56,8 +57,6 @@
     "build": "ng-packagr -p ng-package.json",
     "prepublishOnly": "npm run build",
     "test": "echo \"No tests defined yet\""
-  },
-  "dependencies": {
   },
   "peerDependenciesMeta": {
     "@angular/platform-browser": {
