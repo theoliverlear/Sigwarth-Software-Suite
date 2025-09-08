@@ -5,4 +5,6 @@ export const enum InputType {
     EMAIL = 'email',
     TELEPHONE_PAD = 'tel',
     CHECKBOX = 'checkbox',
+    RANGE = 'range',
+    DATE = 'date',
 }
