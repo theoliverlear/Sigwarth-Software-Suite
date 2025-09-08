@@ -2,6 +2,16 @@
   "$schema": "https://ng-packagr.github.io/schema.json",
   "dest": "dist",
   "lib": {
-    "entryFile": "public_api.ts"
-  }
+    "entryFile": "public_api.ts",
+    "styleIncludePaths": [
+      "styles"
+    ]
+  },
+  "assets": [
+    {
+      "glob": "**/*",
+      "input": "styles",
+      "output": "styles"
+    }
+  ]
 }
