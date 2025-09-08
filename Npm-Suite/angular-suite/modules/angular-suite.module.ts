@@ -8,6 +8,7 @@ import {HttpClientModule, provideHttpClient, withFetch} from "@angular/common/ht
 import {services} from "../services/services";
 import {AppRouting} from "./routing/app-routing.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
     declarations: [
@@ -19,6 +20,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         FormsModule,
         NgOptimizedImage,
         HttpClientModule,
+        RouterModule,
+        AppRouting,
         ...elements,
         ...directives,
     ],
@@ -30,6 +33,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         ...elements,
         ...directives,
         NgOptimizedImage,
+        RouterModule,
         AppRouting
     ],
 })
