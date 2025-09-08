@@ -1,6 +1,6 @@
 {
   "name": "@theoliverlear/angular-suite",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "A suite of prebuilt Angular components, directives, and services by Sigwarth Software.",
   "keywords": [
     "angular",
@@ -24,7 +24,11 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
+  "sass": "./styles/_globals.scss",
   "peerDependencies": {
     "@angular/animations": ">=18.0.0",
     "@angular/common": ">=18.0.0",
@@ -32,6 +36,7 @@
     "@angular/forms": ">=18.0.0",
     "@angular/platform-browser": ">=18.0.0",
     "@angular/router": ">=18.0.0",
+    "@theoliverlear/styles-suite": "^0.2.1",
     "crypto-js": "^4.2.0",
     "rxjs": ">=7.8.0",
     "zone.js": ">=0.15.0"
