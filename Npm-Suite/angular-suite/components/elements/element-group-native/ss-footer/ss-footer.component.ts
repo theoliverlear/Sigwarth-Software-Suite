@@ -12,4 +12,8 @@ export class SsFooterComponent {
     constructor() {
         
     }
+    
+    getYear(): number {
+        return new Date().getFullYear();
+    }
 }
