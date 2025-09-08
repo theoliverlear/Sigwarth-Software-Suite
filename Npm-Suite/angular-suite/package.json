@@ -1,6 +1,6 @@
 {
   "name": "@theoliverlear/angular-suite",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "A suite of prebuilt Angular components, directives, and services by Sigwarth Software.",
   "keywords": [
     "angular",
@@ -61,7 +61,8 @@
   "scripts": {
     "build": "ng-packagr -p ng-package.json",
     "prepublishOnly": "npm run build",
-    "test": "echo \"No tests defined yet\""
+    "test": "echo \"No tests defined yet\"",
+    "preview": "npx ng serve angular-suite-preview"
   },
   "peerDependenciesMeta": {
     "@angular/platform-browser": {
