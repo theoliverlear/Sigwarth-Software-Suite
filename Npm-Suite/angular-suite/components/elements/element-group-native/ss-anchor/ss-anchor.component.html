@@ -1,20 +1,24 @@
 <a [target]="elementLink.targetType" class="link-no-style">
-    <ng-container *ngIf="!hasText">
-        <ng-content></ng-content>
-    </ng-container>
-    <ng-container *ngIf="hasText">
-        <ng-container [ngSwitch]="displayTagType">
-            <h1   *ngSwitchCase="TagType.H1">{{ displayText }}</h1>
-            <h2   *ngSwitchCase="TagType.H2">{{ displayText }}</h2>
-            <h3   *ngSwitchCase="TagType.H3">{{ displayText }}</h3>
-            <h4   *ngSwitchCase="TagType.H4">{{ displayText }}</h4>
-            <h5   *ngSwitchCase="TagType.H5">{{ displayText }}</h5>
-            <h6   *ngSwitchCase="TagType.H6">{{ displayText }}</h6>
-            <p    *ngSwitchCase="TagType.P">{{ displayText }}</p>
-            <span *ngSwitchCase="TagType.SPAN">{{ displayText }}</span>
-            <div  *ngSwitchCase="TagType.DIV">{{ displayText }}</div>
-            <code *ngSwitchCase="TagType.CODE">{{ displayText }}</code>
-            <span *ngSwitchDefault> {{ displayText }}</span>
+    @if (hasText) {
+        <ng-container>
+            <ng-content></ng-content>
         </ng-container>
-    </ng-container>
+    }
+    @if (!hasText) {
+        <ng-container>
+            @switch (displayTagType) {
+                @case (TagType.H1) {<h1>{{ displayText }}</h1>}
+                @case (TagType.H2) {<h2>{{ displayText }}</h2>}
+                @case (TagType.H3) {<h3>{{ displayText }}</h3>}
+                @case (TagType.H4) {<h4>{{ displayText }}</h4>}
+                @case (TagType.H5) {<h5>{{ displayText }}</h5>}
+                @case (TagType.H6) {<h6>{{ displayText }}</h6>}
+                @case (TagType.P) {<p>{{ displayText }}</p>}
+                @case (TagType.SPAN) {<span>{{ displayText }}</span>}
+                @case (TagType.DIV) {<div>{{ displayText }}</div>}
+                @case (TagType.CODE) {<code>{{ displayText }}</code>}
+                @default {<span>{{ displayText }}</span>}
+            }
+        </ng-container>
+    }
 </a>
