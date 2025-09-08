@@ -1,12 +1,18 @@
 <!-- subtitle.component.html -->
 <ng-container>
-    <ng-container [ngSwitch]="tagType" class="title-text-div">
-        <h1  *ngSwitchCase="TagType.H1">{{ text }}</h1>
-        <h2  *ngSwitchCase="TagType.H2">{{ text }}</h2>
-        <h3  *ngSwitchCase="TagType.H3">{{ text }}</h3>
-        <h4  *ngSwitchCase="TagType.H4">{{ text }}</h4>
-        <h5  *ngSwitchCase="TagType.H5">{{ text }}</h5>
-        <h6  *ngSwitchCase="TagType.H6">{{ text }}</h6>
-        <p   *ngSwitchDefault>{{ text }}</p>
+    <ng-container class="title-text-div">
+        @switch (tagType) {
+            @case (TagType.H1) { <h1 class="title-text-div">{{ text }}</h1> }
+            @case (TagType.H2) { <h2 class="title-text-div">{{ text }}</h2> }
+            @case (TagType.H3) { <h3 class="title-text-div">{{ text }}</h3> }
+            @case (TagType.H4) { <h4 class="title-text-div">{{ text }}</h4> }
+            @case (TagType.H5) { <h5 class="title-text-div">{{ text }}</h5> }
+            @case (TagType.H6) { <h6 class="title-text-div">{{ text }}</h6> }
+            @case (TagType.P) { <p class="title-text-div">{{ text }}</p> }
+            @case (TagType.SPAN) { <span class="title-text-div">{{ text }}</span> }
+            @case (TagType.DIV) { <div class="title-text-div">{{ text }}</div> }
+            @case (TagType.CODE) { <code class="title-text-div">{{ text }}</code> }
+            @default { <p class="title-text-div">{{ text }}</p> }
+        }
     </ng-container>
 </ng-container>
