@@ -44,4 +44,3 @@ export * from './models/link/TextElementLink';
 
 // Routing helpers (types only, in case consumers want them)
 export * from './modules/routing/routes';
-export * from './modules/routing/app-routing.module';
