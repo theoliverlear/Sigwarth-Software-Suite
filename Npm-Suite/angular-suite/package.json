@@ -31,6 +31,7 @@
     "@angular/core": ">=18.0.0",
     "@angular/forms": ">=18.0.0",
     "@angular/router": ">=18.0.0",
+    "@angular/platform-browser": ">=18.0.0",
     "crypto-js": "^4.2.0",
     "rxjs": ">=7.8.0",
     "zone.js": ">=0.15.0"
@@ -47,6 +48,7 @@
     "@angular/router": "^20.2.0",
     "@theoliverlear/styles-suite": "^0.2.1",
     "@types/node": "^20.12.12",
+    "crypto-js": "^4.2.0",
     "ng-packagr": "^20.2.0",
     "typescript": "^5.5.4"
   },
@@ -56,6 +58,10 @@
     "test": "echo \"No tests defined yet\""
   },
   "dependencies": {
-    "@angular/platform-browser": "^20.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@angular/platform-browser": {
+      "optional": false
+    }
   }
 }
