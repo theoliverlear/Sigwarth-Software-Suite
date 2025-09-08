@@ -7,9 +7,14 @@ import {
     Output
 } from "@angular/core";
 import {InputType} from "./models/InputType";
+import {CommonModule} from "@angular/common";
 
 @Component({
     selector: 'ss-input',
+    standalone: true,
+    imports: [
+        CommonModule
+    ],
     templateUrl: './ss-input.component.html',
     styleUrls: ['./ss-input.component.scss']
 })
