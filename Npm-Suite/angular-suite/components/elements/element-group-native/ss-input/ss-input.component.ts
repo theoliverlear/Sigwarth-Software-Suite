@@ -12,11 +12,7 @@ import {FormsModule} from "@angular/forms";
 
 @Component({
     selector: 'ss-input',
-    standalone: true,
-    imports: [
-        CommonModule,
-        FormsModule
-    ],
+    standalone: false,
     templateUrl: './ss-input.component.html',
     styleUrls: ['./ss-input.component.scss']
 })

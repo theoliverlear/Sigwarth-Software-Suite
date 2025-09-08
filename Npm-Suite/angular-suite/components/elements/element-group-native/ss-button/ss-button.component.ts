@@ -16,11 +16,7 @@ import {SsTitleComponent} from "../ss-title/ss-title.component";
 
 @Component({
     selector: 'ss-button',
-    standalone: true,
-    imports: [
-        CommonModule,
-        SsTitleComponent
-    ],
+    standalone: false,
     templateUrl: './ss-button.component.html',
     styleUrls: ['./ss-button.component.scss']
 })

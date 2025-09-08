@@ -14,13 +14,7 @@ import {UnoptimizedImageDirective} from "../../../../directives/unoptimized-imag
 
 @Component({
     selector: 'ss-img',
-    standalone: true,
-    imports: [
-        CommonModule,
-        NgOptimizedImage,
-        UndraggableDirective,
-        UnoptimizedImageDirective
-    ],
+    standalone: false,
     templateUrl: './ss-img.component.html',
     styleUrls: ['./ss-img.component.scss']
 })

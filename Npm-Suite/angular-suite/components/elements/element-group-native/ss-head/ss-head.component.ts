@@ -10,11 +10,8 @@ import {CommonModule, DOCUMENT} from "@angular/common";
 
 @Component({
     selector: 'ss-head',
+    standalone: false,
     templateUrl: './ss-head.component.html',
-    standalone: true,
-    imports: [
-        CommonModule
-    ],
 })
 export class SsHeadComponent implements OnChanges{
     static readonly DEFAULT_FAVICON = 'assets/images/favicon/favicon.ico';

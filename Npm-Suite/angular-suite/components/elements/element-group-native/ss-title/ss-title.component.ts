@@ -1,14 +1,10 @@
 // ss-title.component.ts
 import {Component, Input} from "@angular/core";
-import {CommonModule} from "@angular/common";
 import { TagType } from "../../../../models/html/TagType";
 
 @Component({
     selector: 'ss-title',
-    standalone: true,
-    imports: [
-        CommonModule
-    ],
+    standalone: false,
     templateUrl: './ss-title.component.html',
     styleUrls: ['./ss-title.component.scss']
 })

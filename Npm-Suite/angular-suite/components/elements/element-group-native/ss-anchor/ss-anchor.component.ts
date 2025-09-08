@@ -10,10 +10,7 @@ import {TextElementLink} from "../../../../models/link/TextElementLink";
 
 @Component({
     selector: 'ss-anchor',
-    standalone: true,
-    imports: [
-        CommonModule
-    ],
+    standalone: false,
     templateUrl: './ss-anchor.component.html',
     styleUrls: ['./ss-anchor.component.scss']
 })

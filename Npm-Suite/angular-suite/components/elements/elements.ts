@@ -20,6 +20,7 @@ import {
 import {
     SsTitleComponent
 } from "./element-group-native/ss-title/ss-title.component";
+import {SubtitleComponent} from "./element-group-text/subtitle/subtitle.component";
 
 export const elements = [
     SsAnchorComponent,
@@ -29,5 +30,6 @@ export const elements = [
     SsImgComponent,
     SsInputComponent,
     SsParagraphComponent,
-    SsTitleComponent
+    SsTitleComponent,
+    SubtitleComponent
 ]

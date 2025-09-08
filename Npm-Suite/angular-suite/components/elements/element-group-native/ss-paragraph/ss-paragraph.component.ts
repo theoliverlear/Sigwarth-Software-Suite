@@ -4,8 +4,7 @@ import { CommonModule } from "@angular/common";
 
 @Component({
     selector: 'ss-paragraph',
-    standalone: true,
-    imports: [CommonModule],
+    standalone: false,
     templateUrl: './ss-paragraph.component.html',
     styleUrls: ['./ss-paragraph.component.scss']
 })

@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'ss-footer',
-  standalone: true,
-  imports: [CommonModule],
+  standalone: false,
   templateUrl: './ss-footer.component.html',
   styleUrls: ['./ss-footer.component.scss']
 })

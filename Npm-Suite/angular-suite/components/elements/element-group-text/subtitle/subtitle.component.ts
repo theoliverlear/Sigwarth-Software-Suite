@@ -5,11 +5,8 @@ import {CommonModule} from "@angular/common";
 
 @Component({
     selector: 'subtitle',
+    standalone: false,
     templateUrl: './subtitle.component.html',
-    standalone: true,
-    imports: [
-        CommonModule
-    ],
     styleUrls: ['./subtitle.component.scss']
 })
 export class SubtitleComponent {

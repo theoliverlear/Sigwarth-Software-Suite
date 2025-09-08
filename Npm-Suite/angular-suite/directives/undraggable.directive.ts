@@ -2,7 +2,7 @@ import { Directive, ElementRef, Renderer2, HostListener } from '@angular/core';
 
 @Directive({
     selector: '[undraggable]',
-    standalone: true
+    standalone: false
 })
 export class UndraggableDirective {
     constructor(private element: ElementRef, private renderer: Renderer2) {
