@@ -7,16 +7,16 @@
     @if (!hasText) {
         <ng-container>
             @switch (displayTagType) {
-                @case (TagType.H1) {<h1>{{ displayText }}</h1>}
-                @case (TagType.H2) {<h2>{{ displayText }}</h2>}
-                @case (TagType.H3) {<h3>{{ displayText }}</h3>}
-                @case (TagType.H4) {<h4>{{ displayText }}</h4>}
-                @case (TagType.H5) {<h5>{{ displayText }}</h5>}
-                @case (TagType.H6) {<h6>{{ displayText }}</h6>}
-                @case (TagType.P) {<p>{{ displayText }}</p>}
-                @case (TagType.SPAN) {<span>{{ displayText }}</span>}
-                @case (TagType.DIV) {<div>{{ displayText }}</div>}
-                @case (TagType.CODE) {<code>{{ displayText }}</code>}
+                @case (TagType.H1) { <h1>{{ displayText }}</h1> }
+                @case (TagType.H2) { <h2>{{ displayText }}</h2> }
+                @case (TagType.H3) { <h3>{{ displayText }}</h3> }
+                @case (TagType.H4) { <h4>{{ displayText }}</h4> }
+                @case (TagType.H5) { <h5>{{ displayText }}</h5> }
+                @case (TagType.H6) { <h6>{{ displayText }}</h6> }
+                @case (TagType.P) { <p>{{ displayText }}</p> }
+                @case (TagType.SPAN) { <span>{{ displayText }}</span> }
+                @case (TagType.DIV) { <div>{{ displayText }}</div> }
+                @case (TagType.CODE) { <code>{{ displayText }}</code> }
                 @default {<span>{{ displayText }}</span>}
             }
         </ng-container>
