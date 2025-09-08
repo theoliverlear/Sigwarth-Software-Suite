@@ -33,7 +33,7 @@ export class SsButtonComponent implements OnInit{
     constructor() {
         
     }
-    ngOnInit() {
+    ngOnInit(): void {
         this.setAlignSelf();
     }
 
