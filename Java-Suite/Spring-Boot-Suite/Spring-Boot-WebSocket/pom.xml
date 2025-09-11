@@ -10,6 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <version>0.0.14</version>
     <artifactId>spring-boot-websocket</artifactId>
     <name>Spring-Boot-WebSocket</name>
     <description>Base WebSocket handlers that parse requests and serializes responses.</description>
