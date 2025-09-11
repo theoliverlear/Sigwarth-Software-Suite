@@ -41,6 +41,7 @@ export * from './models/html/TagType';
 export * from './models/html/TargetType';
 export * from './models/link/ElementLink';
 export * from './models/link/TextElementLink';
+export * from './models/websocket/WebSocketCapable';
 
 // Routing helpers (types only, in case consumers want them)
 export * from './modules/routing/routes';
