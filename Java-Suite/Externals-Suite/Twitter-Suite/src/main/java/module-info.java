@@ -1,5 +1,5 @@
 module com.sigwarthsoftware.twitter {
-    requires annotations;
+    requires static annotations;
     requires com.fasterxml.jackson.databind;
     requires static lombok;
     requires org.apache.httpcomponents.httpclient;
