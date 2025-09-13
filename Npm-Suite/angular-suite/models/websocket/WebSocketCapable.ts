@@ -1,6 +1,6 @@
 import {Subscription} from "rxjs";
 
 export interface WebSocketCapable {
-    webSocketSubscription: Subscription;
+    webSocketSubscriptions: Record<string, Subscription>;
     initializeWebSocket(): void;
 }
