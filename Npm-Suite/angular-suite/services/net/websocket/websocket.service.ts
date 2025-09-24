@@ -1,6 +1,6 @@
 // websocket.service.ts
 import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable, shareReplay} from "rxjs";
+import {Observable, Subject, Subscription, shareReplay} from "rxjs";
 import {webSocket, WebSocketSubject} from "rxjs/webSocket";
 
 @Injectable({
@@ -8,66 +8,107 @@ import {webSocket, WebSocketSubject} from "rxjs/webSocket";
 })
 export class WebSocketService<Send, Receive> {
     private socket$: WebSocketSubject<Send> | undefined;
-    private messagesSubject$: BehaviorSubject<Receive> = new BehaviorSubject<Receive>(null);
+    private socketSub?: Subscription;
+
+    private messagesSubject$: Subject<Receive> = new Subject<Receive>();
     public messages$: Observable<Receive> = this.messagesSubject$.asObservable().pipe(shareReplay(1));
+
     private _isConnected: boolean = false;
     private _url: string;
+    private _withLogging: boolean;
 
-    constructor(url: string) {
+    constructor(url: string, withLogging: boolean = false) {
         this._url = url;
+        this._withLogging = withLogging;
     }
 
     public connect(): void {
-        if (this.isSocketUnavailable()) {
-            this.initializeSocket(this._url);
-            this.subscribeToServer();
-            this._isConnected = true;
+        if (!this.isSocketUnavailable()) {
+            return;
         }
+        if (this._withLogging) {
+            console.log('Connecting to WebSocket: ', this._url);
+        }
+        this.initializeSocket(this._url);
+        this.subscribeToServer();
     }
 
     private isSocketUnavailable(): boolean {
-        return !this.socket$ || this.socket$.closed;
+        return !this.socket$ || this.socket$.closed === true;
     }
 
     private subscribeToServer(): void {
-        this.socket$.subscribe(
-            (message: Send): void => this.messagesSubject$.next(message as unknown as Receive),
-            (error: any): void => console.error('WebSocket error:', error),
-            (): boolean => this._isConnected = false
-        );
+        if (!this.socket$) {
+            return;
+        }
+        if (this._withLogging) {
+            console.log('Subscribing to WebSocket');
+        }
+        this.socketSub = this.socket$.subscribe({
+            next: (message: Send): void => this.messagesSubject$.next(message as unknown as Receive),
+            error: (error: any): void => {
+                console.error('WebSocket error:', error);
+                this._isConnected = false;
+            },
+            complete: (): void => {
+                this._isConnected = false;
+            }
+        });
     }
 
     private initializeSocket(url: string): void {
         this.socket$ = webSocket<Send>({
             url: url,
             serializer: (msg: Send) => JSON.stringify(msg),
-            deserializer: (event: MessageEvent<any>) => JSON.parse(event.data) as Send
+            deserializer: (event: MessageEvent<any>) => JSON.parse(event.data) as Send,
+            openObserver: {
+                next: (): void => {
+                    this._isConnected = true;
+                }
+            },
+            closeObserver: {
+                next: (): void => {
+                    this._isConnected = false;
+                }
+            }
         });
-
     }
 
     public sendMessage(message: Send): void {
         if (this.canSendMessage()) {
-            console.log('Sending message:', message);
-            this.socket$.next(message);
+            if (this._withLogging) {
+                console.log('Sending message: ', message);
+            }
+            this.socket$!.next(message);
         } else {
             console.error('WebSocket is not connected.');
         }
     }
 
     private canSendMessage(): boolean {
-        return this.socket$ && this.isConnected;
+        return !!this.socket$ && this.isConnected && !this.socket$.closed;
     }
 
     public disconnect(): void {
-        if (this.socket$) {
-            this.closeConnection();
-        }
+        this.closeConnection();
     }
 
-    private closeConnection() {
-        this._isConnected = false;
-        this.socket$.complete();
+    private closeConnection(): void {
+        if (this._withLogging) {
+            console.log('Closing WebSocket connection');
+        }
+        try {
+            if (this.socketSub && !this.socketSub.closed) {
+                this.socketSub.unsubscribe();
+            }
+            if (this.socket$ && !this.socket$.closed) {
+                this.socket$.complete();
+            }
+        } finally {
+            this._isConnected = false;
+            this.socketSub = undefined;
+            this.socket$ = undefined;
+        }
     }
 
     public getMessages(): Observable<Receive> {
