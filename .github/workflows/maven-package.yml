@@ -34,11 +34,13 @@ jobs:
           distribution: ${{ inputs.distribution }}
           java-version: ${{ inputs.java-version }}
           server-id: github
+          server-username: ${{ github.actor }}
+          server-password: ${{ secrets.GITHUB_TOKEN }}
           settings-path: ${{ github.workspace }}
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B -s "$GITHUB_WORKSPACE/settings.xml" package --file pom.xml
 
       - name: Deploy modules (skip if version exists)
         env:
