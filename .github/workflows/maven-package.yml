@@ -33,7 +33,7 @@ jobs:
         with:
           distribution: ${{ inputs.distribution }}
           java-version: ${{ inputs.java-version }}
-          server-id: github
+          server-id: gh-sigwarth-suite
           server-username: ${{ github.actor }}
           server-password: ${{ secrets.GITHUB_TOKEN }}
           settings-path: ${{ github.workspace }}
