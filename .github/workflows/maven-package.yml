@@ -34,7 +34,7 @@ jobs:
           distribution: ${{ inputs.distribution }}
           java-version: ${{ inputs.java-version }}
           server-id: gh-sigwarth-suite
-          server-username: ${{ github.repository_owner }}
+          server-username: ${{ github.actor }}
           server-password: ${{ secrets.GITHUB_TOKEN }}
           settings-path: ${{ github.workspace }}
           cache: maven
@@ -63,7 +63,7 @@ jobs:
             URL="https://maven.pkg.github.com/${REPO}/${GP}/${A}/${V}/${A}-${V}.pom"
 
             echo "Checking $A:$V at $URL"
-            code=$(curl -L -s -o /dev/null -w "%{http_code}" -u "${{ github.repository_owner }}:${GITHUB_TOKEN}" "$URL" -H "Authorization: Bearer ${GITHUB_TOKEN}")
+            code=$(curl -L -s -o /dev/null -w "%{http_code}" -u "${{ github.actor }}:${GITHUB_TOKEN}" "$URL" -H "Authorization: Bearer ${GITHUB_TOKEN}")
             if [ "$code" = "200" ]; then
               echo "Artifact already exists (HTTP 200). Skipping deploy for $A:$V"
               continue
@@ -103,7 +103,7 @@ jobs:
               mvn -B -f "$GITHUB_WORKSPACE/pom.xml" -pl ":$A" -am -DskipTests=true -DskipRootDeploy=true install -s "$GITHUB_WORKSPACE/settings.xml" 2>&1 | tee "$log"
               rc=${PIPESTATUS[0]}
               if [ $rc -eq 0 ]; then
-                mvn -B -f "$GITHUB_WORKSPACE/pom.xml" -pl ":$A" -DskipTests=true -DskipExisting=true -DskipRootDeploy=true deploy -s "$GITHUB_WORKSPACE/settings.xml" 2>&1 | tee -a "$log"
+                mvn -B -f "$GITHUB_WORKSPACE/pom.xml" -pl ":$A" -DskipTests=true -DskipExisting=true -DskipRootDeploy=true -DaltDeploymentRepository=gh-sigwarth-suite::default::https://maven.pkg.github.com/${REPO} -DretryFailedDeploymentCount=3 deploy -s "$GITHUB_WORKSPACE/settings.xml" 2>&1 | tee -a "$log"
                 rc=${PIPESTATUS[0]}
               fi
               set -e
