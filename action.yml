@@ -62,6 +62,47 @@ runs:
         java-version: '23'
         cache: maven
 
+    - name: Configure Maven settings for GitHub Packages
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        cat > "${{ github.action_path }}/settings.xml" <<'EOF'
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+          <servers>
+            <server>
+              <id>github</id>
+              <username>x-access-token</username>
+              <password>${env.GITHUB_TOKEN}</password>
+            </server>
+            <server>
+              <id>gh-sigwarth-suite</id>
+              <username>x-access-token</username>
+              <password>${env.GITHUB_TOKEN}</password>
+            </server>
+          </servers>
+          <profiles>
+            <profile>
+              <id>github-packages</id>
+              <repositories>
+                <repository>
+                  <id>gh-sigwarth-suite</id>
+                  <name>GitHub Packages</name>
+                  <url>https://maven.pkg.github.com/theoliverlear/Sigwarth-Software-Suite</url>
+                  <releases><enabled>true</enabled></releases>
+                  <snapshots><enabled>true</enabled></snapshots>
+                </repository>
+              </repositories>
+            </profile>
+          </profiles>
+          <activeProfiles>
+            <activeProfile>github-packages</activeProfile>
+          </activeProfiles>
+        </settings>
+        EOF
+
     - name: Resolve mode
       id: mode
       shell: bash
@@ -125,7 +166,9 @@ runs:
 
     - name: Build Promo Suite
       shell: bash
-      run: mvn -B -DskipTests -f "${{ github.action_path }}/Java-Suite/Promo-Suite/pom.xml" package
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: mvn -B -s "${{ github.action_path }}/settings.xml" -DskipTests -f "${{ github.action_path }}/Java-Suite/Promo-Suite/pom.xml" package
 
     # ---------- Issues ----------
     - name: Run IssuePromo
@@ -136,7 +179,7 @@ runs:
       working-directory: ${{ github.action_path }}/Java-Suite/Promo-Suite
       shell: bash
       run: >
-        mvn -q -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+        mvn -q -s "${{ github.action_path }}/settings.xml" -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
         -Dexec.mainClass=com.sigwarthsoftware.promo.IssuePromo
         -Dexec.classpathScope=runtime
       env:
@@ -161,7 +204,7 @@ runs:
       working-directory: ${{ github.action_path }}/Java-Suite/Promo-Suite
       shell: bash
       run: >
-        mvn -q -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+        mvn -q -s "${{ github.action_path }}/settings.xml" -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
         -Dexec.mainClass=com.sigwarthsoftware.promo.PushPromo
         -Dexec.classpathScope=runtime
       env:
@@ -201,7 +244,7 @@ runs:
       working-directory: ${{ github.action_path }}/Java-Suite/Promo-Suite
       shell: bash
       run: >
-        mvn -q -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
+        mvn -q -s "${{ github.action_path }}/settings.xml" -DskipTests org.codehaus.mojo:exec-maven-plugin:3.5.0:java
         -Dexec.mainClass=com.sigwarthsoftware.promo.ReleasePromo
         -Dexec.classpathScope=runtime
       env:
