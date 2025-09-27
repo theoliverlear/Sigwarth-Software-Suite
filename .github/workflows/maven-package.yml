@@ -34,6 +34,8 @@ jobs:
           distribution: ${{ inputs.distribution }}
           java-version: ${{ inputs.java-version }}
           server-id: github
+          server-username: x-access-token
+          server-password: ${{ secrets.GH_TOKEN }}
           settings-path: ${{ github.workspace }}
           cache: maven
 
@@ -61,7 +63,7 @@ jobs:
             URL="https://maven.pkg.github.com/${REPO}/${GP}/${A}/${V}/${A}-${V}.pom"
 
             echo "Checking $A:$V at $URL"
-            code=$(curl -L -s -o /dev/null -w "%{http_code}" -u "${{ github.actor }}:${GITHUB_TOKEN}" "$URL")
+            code=$(curl -L -s -o /dev/null -w "%{http_code}" -u "x-access-token:${GITHUB_TOKEN}" "$URL")
             if [ "$code" = "200" ]; then
               echo "Artifact already exists (HTTP 200). Skipping deploy for $A:$V"
               continue
