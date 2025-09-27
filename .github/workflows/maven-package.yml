@@ -39,7 +39,48 @@ jobs:
           settings-path: ${{ github.workspace }}
           cache: maven
 
+      - name: Configure Maven settings for GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          cat > "$GITHUB_WORKSPACE/settings.xml" <<'EOF'
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>github</id>
+                <username>x-access-token</username>
+                <password>${env.GITHUB_TOKEN}</password>
+              </server>
+            </servers>
+            <profiles>
+              <profile>
+                <id>github</id>
+                <repositories>
+                  <repository>
+                    <id>github</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/theoliverlear/Sigwarth-Software-Suite</url>
+                    <releases>
+                      <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                      <enabled>true</enabled>
+                    </snapshots>
+                  </repository>
+                </repositories>
+              </profile>
+            </profiles>
+            <activeProfiles>
+              <activeProfile>github</activeProfile>
+            </activeProfiles>
+          </settings>
+          EOF
+
       - name: Build with Maven
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: mvn -B -s "$GITHUB_WORKSPACE/settings.xml" package --file pom.xml
 
       - name: Deploy modules (skip if version exists)
