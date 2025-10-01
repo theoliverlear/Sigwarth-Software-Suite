@@ -1,4 +1,4 @@
-export const enum InputType {
+export enum InputType {
     NUMBER = 'number',
     TEXT = 'text',
     PASSWORD = 'password',
