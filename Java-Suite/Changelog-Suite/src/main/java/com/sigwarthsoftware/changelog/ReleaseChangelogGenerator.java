@@ -36,10 +36,10 @@ public class ReleaseChangelogGenerator {
         String[] possibleBranches = {"main", "master"};
         String response = null;
         for (String branch : possibleBranches) {
-            // https://raw.githubusercontent.com/theoliverlear/Sigwarth-Software-Suite/refs/heads/master/CHANGELOG.md
-            String url = "https://raw.githubusercontent.com/theoliverlear/%s/refs/heads/%s/CHANGELOG.md".formatted(System.getenv("REPO_NAME"), branch);
+            // https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/refs/heads/master/CHANGELOG.md
+            String url = "https://raw.githubusercontent.com/%s/%s/refs/heads/%s/CHANGELOG.md".formatted(System.getenv("REPO_OWNER"), System.getenv("REPO_NAME"), branch);
             HttpGet httpGet = new HttpGet(url);
-            httpGet.addHeader("User-Agent", "Sigwarth-Changelog/0.0.2 (+https://github.com/theoliverlear)");
+            httpGet.addHeader("User-Agent", "Sigwarth-Changelog/0.0.2 (+https://github.com/%s)".formatted(System.getenv("REPO_OWNER")));
             httpGet.addHeader("Accept", "text/plain; charset=utf-8");
             try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
                 try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
