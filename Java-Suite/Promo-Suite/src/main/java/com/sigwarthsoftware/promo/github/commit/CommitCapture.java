@@ -158,7 +158,7 @@ public class CommitCapture {
 
     @NotNull
     private static String getBaseUrl() {
-        final String baseUrl = "https://api.github.com/repos/theoliverlear/%s/compare/".formatted(System.getenv("REPO_NAME"));
+        final String baseUrl = "https://api.github.com/repos/%s/%s/compare/".formatted(System.getenv("REPO_OWNER"), System.getenv("REPO_NAME"));
         return baseUrl;
     }
 
